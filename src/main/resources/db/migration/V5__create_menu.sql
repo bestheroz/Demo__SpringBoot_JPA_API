@@ -1,0 +1,14 @@
+CREATE TABLE menu
+(
+    ID            BIGINT(20) PRIMARY KEY AUTO_INCREMENT,
+    NAME          VARCHAR(1000) NOT NULL,
+    TYPE          CHAR(1)       NOT NULL,
+    PARENT_ID     INT(10)       NOT NULL,
+    DISPLAY_ORDER INT(10)       NOT NULL,
+    ICON          VARCHAR(50)   NULL,
+    URL           VARCHAR(4000),
+    CREATED_BY    VARCHAR(100)  NOT NULL,
+    CREATED       DATETIME      NOT NULL,
+    UPDATED_BY    VARCHAR(100)  NOT NULL,
+    UPDATED       DATETIME      NOT NULL
+);

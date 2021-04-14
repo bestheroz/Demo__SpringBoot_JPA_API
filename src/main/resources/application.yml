@@ -1,0 +1,113 @@
+spring:
+  profiles:
+    active: local
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 10MB
+      file-size-threshold: 0
+  web:
+    resources:
+      chain:
+        compressed: true
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    generate-ddl: false
+    properties:
+      hibernate:
+        format_sql: true
+    database: h2
+    open-in-view: false
+  datasource:
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+server:
+  compression:
+    enabled: true
+  http2:
+    enabled: true
+  servlet:
+    session:
+      cookie:
+        name: JSESSIONID_DEMO
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+management:
+  endpoint:
+    shutdown:
+      enabled: true
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: shutdown
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql:
+              BasicBinder: trace
+springdoc:
+  paths-to-match:
+    - /v1/api/**
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:h2:mem:mydb
+    username: sa
+#  flyway:
+#    url: jdbc:h2:mem:mydb
+server:
+  port: 8080
+sentry:
+  logging:
+    enabled: false
+management:
+  endpoint:
+    shutdown:
+      enabled: false
+  endpoints:
+    enabled-by-default: false
+variable:
+  app:
+    title: Demo of (SpringBoot + JPA + VueJs + Typescript)
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+server:
+  port: 8080
+sentry:
+  dsn: https://7bb0a4fc0ddc4803998ee772401e3cfc@o368486.ingest.sentry.io/5197118
+  environment: dev
+  server-name:
+variable:
+  app:
+    title:
+---
+spring:
+  config:
+    activate:
+      on-profile: production
+server:
+  port:
+sentry:
+  dsn: https://7bb0a4fc0ddc4803998ee772401e3cfc@o368486.ingest.sentry.io/5197118
+  environment: production
+  server-name:
+variable:
+  app:
+    title:
