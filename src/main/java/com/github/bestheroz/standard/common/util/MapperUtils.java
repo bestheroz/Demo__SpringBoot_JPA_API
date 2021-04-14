@@ -5,13 +5,16 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.bestheroz.standard.common.exception.BusinessException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.BeanUtils;
 
 @Slf4j
 @UtilityClass
@@ -32,6 +35,17 @@ public class MapperUtils {
     } catch (final JsonProcessingException e) {
       log.warn(ExceptionUtils.getStackTrace(e));
       throw new RuntimeException(e);
+    }
+  }
+
+  public <T> T toObject(final Object source, final Class<T> targetType) {
+    try {
+      T t = targetType.getDeclaredConstructor().newInstance();
+      BeanUtils.copyProperties(source, t);
+      return t;
+    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+      log.warn(ExceptionUtils.getStackTrace(e));
+      throw new BusinessException(e);
     }
   }
 
