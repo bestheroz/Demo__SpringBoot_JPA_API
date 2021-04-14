@@ -40,10 +40,13 @@ public class MapperUtils {
 
   public <T> T toObject(final Object source, final Class<T> targetType) {
     try {
-      T t = targetType.getDeclaredConstructor().newInstance();
+      final T t = targetType.getDeclaredConstructor().newInstance();
       BeanUtils.copyProperties(source, t);
       return t;
-    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+    } catch (final InstantiationException
+        | IllegalAccessException
+        | InvocationTargetException
+        | NoSuchMethodException e) {
       log.warn(ExceptionUtils.getStackTrace(e));
       throw new BusinessException(e);
     }
