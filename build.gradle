@@ -63,10 +63,6 @@ tasks.withType(JavaCompile) {
 
 bootJar {
     archiveFileName = 'demo.jar'
-
-    from("vue/dist") {
-        into "static"
-    }
 }
 
 spotless {
