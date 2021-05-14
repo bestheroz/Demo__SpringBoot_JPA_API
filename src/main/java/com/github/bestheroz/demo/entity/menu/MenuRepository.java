@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MenuRepository extends CrudRepository<MenuEntity, Long> {
   List<MenuEntity> findAll(Sort sort);
+
+  List<MenuEntity> findAllByOrderByDisplayOrderAsc();
 }

@@ -50,8 +50,7 @@ public class AuthService implements UserDetailsService {
                     memberEntity.getId(),
                     memberEntity.getUserId(),
                     memberEntity.getName(),
-                    memberEntity.getAuthorityId(),
-                    memberEntity.getTheme()))
+                    memberEntity.getAuthorityId()))
         .orElseThrow(() -> new UsernameNotFoundException("No user found by `" + username + "`"));
   }
 
