@@ -1,16 +1,25 @@
 package com.github.bestheroz.demo.api.internal.member;
 
+import com.github.bestheroz.demo.entity.authority.AuthorityRepository;
+import com.github.bestheroz.demo.entity.authority.item.AuthorityItemEntity;
 import com.github.bestheroz.demo.entity.code.CodeRepository;
 import com.github.bestheroz.demo.entity.member.MemberEntity;
 import com.github.bestheroz.demo.entity.member.MemberRepository;
+import com.github.bestheroz.demo.entity.member.config.MemberConfigEntity;
+import com.github.bestheroz.demo.entity.member.config.MemberConfigRepository;
+import com.github.bestheroz.demo.entity.menu.MenuRepository;
 import com.github.bestheroz.standard.common.exception.BusinessException;
 import com.github.bestheroz.standard.common.exception.ExceptionCode;
 import com.github.bestheroz.standard.common.response.ApiResult;
 import com.github.bestheroz.standard.common.response.Result;
 import com.github.bestheroz.standard.common.util.AuthenticationUtils;
+import com.github.bestheroz.standard.common.util.MapperUtils;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +34,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class MemberController {
   @Resource private MemberRepository memberRepository;
-  @Resource private MemberService memberService;
+  @Resource private AuthorityRepository authorityRepository;
   @Resource private CodeRepository codeRepository;
+  @Resource private MenuRepository menuRepository;
+  @Resource private MemberConfigRepository memberConfigRepository;
 
   @GetMapping(value = "codes")
   ResponseEntity<ApiResult> getItems() {
@@ -90,21 +101,64 @@ public class MemberController {
             });
   }
 
-  @PostMapping(value = "mine/changeTheme")
-  public ResponseEntity<ApiResult> changeTheme(@RequestBody final Map<String, String> payload) {
+  @PostMapping(value = "mine/config")
+  public ResponseEntity<ApiResult> changeConfig(@RequestBody final MemberConfigEntity payload) {
+    return this.memberConfigRepository
+        .findByMemberId(AuthenticationUtils.getId())
+        .map(
+            memberConfigEntity -> {
+              BeanUtils.copyProperties(
+                  payload,
+                  memberConfigEntity,
+                  "id",
+                  "created",
+                  "createdBy",
+                  "updated",
+                  "updatedBy",
+                  "member");
+              return Result.ok(this.memberConfigRepository.save(memberConfigEntity));
+            })
+        .orElseGet(
+            () -> {
+              payload.setMember(
+                  this.memberRepository
+                      .findById(AuthenticationUtils.getId())
+                      .orElseThrow(
+                          () -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_MEMBER)));
+              return Result.ok(this.memberConfigRepository.save(payload));
+            });
+  }
+
+  @GetMapping(value = "mine/config")
+  public ResponseEntity<ApiResult> getConfig() {
     return this.memberRepository
         .findById(AuthenticationUtils.getId())
-        .map(
-            memberEntity -> {
-              memberEntity.setTheme(payload.get("theme"));
-              this.memberRepository.save(memberEntity);
-              return Result.ok();
-            })
+        .map(memberEntity -> Result.ok(memberEntity.getConfig()))
         .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_MEMBER));
   }
 
   @GetMapping(value = "mine/authority")
   ResponseEntity<ApiResult> getAuthority() {
-    return Result.ok(this.memberService.getItem(AuthenticationUtils.getId()));
+    return Result.ok(
+        this.authorityRepository
+            .findById(AuthenticationUtils.getLoginVO().getAuthorityId())
+            .map(
+                authority -> {
+                  if (authority.getCode().equals("SUPER")) {
+                    authority.setItems(
+                        this.menuRepository.findAllByOrderByDisplayOrderAsc().stream()
+                            .map(
+                                menu -> {
+                                  final AuthorityItemEntity authorityItemEntity =
+                                      MapperUtils.toObject(menu, AuthorityItemEntity.class);
+                                  authorityItemEntity.setMenu(menu);
+                                  authorityItemEntity.setTypesJson(List.of("VIEW"));
+                                  return authorityItemEntity;
+                                })
+                            .collect(Collectors.toList()));
+                  }
+                  return authority;
+                })
+            .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_MEMBER)));
   }
 }

@@ -20,7 +20,6 @@ public class UserVO implements UserDetails, Serializable {
   private String userId;
   private String name;
   private Long authorityId;
-  private String theme;
 
   @Override
   @JsonIgnore
