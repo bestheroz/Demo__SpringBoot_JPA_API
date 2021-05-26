@@ -94,6 +94,8 @@ sentry:
   dsn: https://7bb0a4fc0ddc4803998ee772401e3cfc@o368486.ingest.sentry.io/5197118
   environment: dev
   server-name:
+  enable-tracing: true
+  traces-sample-rate: 1.0
 variable:
   app:
     test: Test
@@ -108,6 +110,8 @@ sentry:
   dsn: https://7bb0a4fc0ddc4803998ee772401e3cfc@o368486.ingest.sentry.io/5197118
   environment: production
   server-name:
+  enable-tracing: true
+  traces-sample-rate: 1.0
 variable:
   app:
     test: Test
