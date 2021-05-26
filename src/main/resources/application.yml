@@ -82,7 +82,7 @@ management:
     enabled-by-default: false
 variable:
   app:
-    title: Demo
+    test: Test
 ---
 spring:
   config:
@@ -96,7 +96,7 @@ sentry:
   server-name:
 variable:
   app:
-    title:
+    test: Test
 ---
 spring:
   config:
@@ -110,4 +110,4 @@ sentry:
   server-name:
 variable:
   app:
-    title:
+    test: Test

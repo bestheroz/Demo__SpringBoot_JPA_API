@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class VariableController {
   private Map<String, String> app;
 
-  @GetMapping("title")
-  public ResponseEntity<ApiResult> getTitle() {
-    return Result.ok(this.app.get("title"));
+  @GetMapping("test")
+  public ResponseEntity<ApiResult> getTest() {
+    return Result.ok(this.app.get("test"));
   }
 }

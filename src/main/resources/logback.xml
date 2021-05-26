@@ -66,6 +66,8 @@
   <logger name="org.hibernate" level="INFO"/>
   <logger name="org.hibernate.SQL.logStatement" level="DEBUG"/>
 
+  <logger name="io.swagger" level="INFO"/>
+
   <root level="DEBUG">
     <springProfile name="dev">
       <appender-ref ref="DEBUG_FILE_LOG"/>
