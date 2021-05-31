@@ -67,8 +67,6 @@ spring:
   datasource:
     url: jdbc:h2:mem:mydb
     username: sa
-#  flyway:
-#    url: jdbc:h2:mem:mydb
 server:
   port: 8080
 sentry:
@@ -80,9 +78,6 @@ management:
       enabled: false
   endpoints:
     enabled-by-default: false
-variable:
-  app:
-    test: Test
 ---
 spring:
   config:
@@ -96,9 +91,6 @@ sentry:
   server-name:
   enable-tracing: true
   traces-sample-rate: 1.0
-variable:
-  app:
-    test: Test
 ---
 spring:
   config:
@@ -112,6 +104,3 @@ sentry:
   server-name:
   enable-tracing: true
   traces-sample-rate: 1.0
-variable:
-  app:
-    test: Test
