@@ -48,6 +48,7 @@
   </springProfile>
 
   <logger name="org.springframework" level="INFO"/>
+  <logger name="_org.springframework" level="INFO"/>
   <logger
     name="org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor"
     level="DEBUG"/>
