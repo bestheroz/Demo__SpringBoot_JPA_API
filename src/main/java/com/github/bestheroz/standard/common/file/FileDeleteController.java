@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FileDeleteController {
   @DeleteMapping(value = "{fileName}")
   ResponseEntity<ApiResult> deleteFile(@PathVariable("fileName") final String fileName) {
-    FileUtils.deleteFile("uploaded/" + fileName);
+    FileUtils.delete("uploaded/" + fileName);
     return Result.ok();
   }
 }

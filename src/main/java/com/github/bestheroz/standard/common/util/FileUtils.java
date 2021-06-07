@@ -8,12 +8,18 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tika.Tika;
@@ -31,31 +37,18 @@ public class FileUtils {
   private final String STR_UNDERLINE = "_";
   private final Tika TIKA_INSTANCE = new Tika();
 
-  public void deleteDirectory(final File file) {
-    forceDelete(file);
-    log.info("Target for deleting dir : {}", file.getAbsolutePath());
-  }
-
-  public void deleteDirectory(final String filePath) {
-    deleteFile(getFile(filePath));
-  }
-
-  public void deleteFile(final File file) {
-    forceDelete(file);
-    log.info("Target for deleting file : {}", file.getAbsolutePath());
-  }
-
-  public void deleteFile(final String filePath) {
-    deleteFile(getFile(filePath));
-  }
-
-  private void forceDelete(final File file) {
+  public void delete(final File file) {
     try {
       org.apache.commons.io.FileUtils.forceDelete(file);
+      log.info("file deleted : {}", file.getAbsolutePath());
     } catch (final IOException e) {
       log.warn(ExceptionUtils.getStackTrace(e));
-      // throw new CommonResponseException(e);
+      throw new BusinessException(e);
     }
+  }
+
+  public void delete(final String filePath) {
+    delete(getFile(filePath));
   }
 
   public String getEncodedFileName(final HttpServletRequest request, final String fileName) {
@@ -100,57 +93,46 @@ public class FileUtils {
   }
 
   public File getFile(final String filePath) {
-    final String path =
-        RegExUtils.replaceAll(getFileRoot() + "/" + filePath, "\\\\", "/").replaceAll("//", "/");
-    final File file = org.apache.commons.io.FileUtils.getFile(path);
-    if (file.isDirectory() && !StringUtils.endsWith(path, "/")) {
-      log.warn("{} : {}", path, ExceptionCode.ERROR_DIR_PATH_MUST_ENDS_WITH_SLASH.toString());
-      throw new BusinessException(ExceptionCode.ERROR_DIR_PATH_MUST_ENDS_WITH_SLASH);
-    }
-    return file;
+    return org.apache.commons.io.FileUtils.getFile(new File(FILE_ROOT_PATH), filePath);
   }
 
-  public void checkExistingDirectory(final String dirPath) {
-    final String path =
-        RegExUtils.replaceAll(getFileRoot() + dirPath, "\\\\", "/").replaceAll("//", "/");
-    if (!StringUtils.endsWith(path, "/")) {
-      log.warn("{} : {}", path, ExceptionCode.ERROR_DIR_PATH_MUST_ENDS_WITH_SLASH.toString());
-      throw new BusinessException(ExceptionCode.ERROR_DIR_PATH_MUST_ENDS_WITH_SLASH);
-    }
-    log.debug(path);
-    final File file = new File(path);
-    if (!NullUtils.exists(file)) {
-      try {
-        org.apache.commons.io.FileUtils.forceMkdir(file);
-      } catch (final IOException e) {
-        log.warn(ExceptionUtils.getStackTrace(e));
-        // ignored
-      }
+  public File getFile(final String dirPath, final String filePath) {
+    return org.apache.commons.io.FileUtils.getFile(mkdirIfNotExist(dirPath), filePath);
+  }
+
+  private File mkdirIfNotExist(final String dirPath) {
+    try {
+      org.apache.commons.io.FileUtils.forceMkdir(getFile(dirPath));
+      return getFile(dirPath);
+    } catch (final IOException e) {
+      log.warn(ExceptionUtils.getStackTrace(e));
+      throw new BusinessException(e);
     }
   }
 
-  private String getFileRoot() {
-    return FILE_ROOT_PATH;
+  public String upload(
+      @NotNull final String targetDirPath, @NotNull final MultipartFile multipartFile) {
+    if (multipartFile == null) {
+      throw BusinessException.ERROR_SYSTEM;
+    }
+    final File file = uploadMultipartFile(targetDirPath, multipartFile);
+    log.info(STR_INFO_MESSAGE, file.getAbsolutePath());
+    return file.getName();
   }
 
-  public boolean isExistsFile(final String filePath) {
-    return NullUtils.exists(getFile(filePath));
-  }
-
-  public void uploadAllFiles(
-      final MultipartHttpServletRequest mRequest, final String targetDirPath) {
+  public List<String> uploadAll(
+      final String targetDirPath, final MultipartHttpServletRequest mRequest) {
     final Map<String, MultipartFile> fileMap = mRequest.getFileMap();
     if (NullUtils.size(fileMap) < 1) {
-      return;
+      return List.of();
     }
-    checkExistingDirectory(targetDirPath);
+    final List<String> result = new ArrayList<>();
     final Iterator<String> fileNames = mRequest.getFileNames();
     while (NullUtils.hasNext(fileNames)) {
       final MultipartFile multipartFile = fileMap.get(fileNames.next());
-      validateFile(multipartFile);
-      final File file = uploadMultipartFile(targetDirPath, multipartFile);
-      log.info(STR_INFO_MESSAGE, file.getAbsolutePath());
+      result.add(upload(targetDirPath, multipartFile));
     }
+    return result;
   }
 
   private File uploadMultipartFile(final String targetDirPath, final MultipartFile multipartFile) {
@@ -161,10 +143,12 @@ public class FileUtils {
         .append(
             DigestUtils.md5DigestAsHex(
                 Objects.requireNonNull(multipartFile.getOriginalFilename()).getBytes()));
-    if (StringUtils.isNotEmpty(getExtension(multipartFile))) {
-      fileName.append(STR_DOT).append(getExtension(multipartFile));
+    final String extension = getExtension(multipartFile);
+    if (StringUtils.isNotEmpty(extension)) {
+      fileName.append(STR_DOT).append(extension);
     }
-    final File file = getFile(targetDirPath + "/" + fileName);
+    validateFile(multipartFile);
+    final File file = getFile(targetDirPath, fileName.toString());
     try {
       FileCopyUtils.copy(multipartFile.getBytes(), file);
     } catch (final IOException e) {
@@ -174,29 +158,14 @@ public class FileUtils {
     return file;
   }
 
-  public String uploadFile(final MultipartFile multipartFile, final String targetDirPath) {
-    return Optional.ofNullable(multipartFile)
-        .map(
-            item -> {
-              validateFile(item);
-              checkExistingDirectory(targetDirPath);
-              final File file = uploadMultipartFile(targetDirPath, item);
-              log.info(STR_INFO_MESSAGE, file.getAbsolutePath());
-              return file.getName();
-            })
-        .orElse("error");
-  }
-
   // 업로드 하려는 파일의 검증(MultipartFile 이용)
   public void validateFile(final MultipartFile multipartFile) {
     if (FileType.ILLEGAL.extList.contains(getExtension(multipartFile))) {
-      log.warn(
-          "{}{}", ExceptionCode.FAIL_FILE_SIZE.toString(), multipartFile.getOriginalFilename());
+      log.warn("{}{}", ExceptionCode.FAIL_FILE_SIZE, multipartFile.getOriginalFilename());
       throw new BusinessException(ExceptionCode.FAIL_FILE_SIZE);
     }
     if (FileType.ILLEGAL.mimeTypeList.contains(getMimeType(multipartFile))) {
-      log.warn(
-          "{}{}", ExceptionCode.FAIL_FILE_MIMETYPE.toString(), multipartFile.getOriginalFilename());
+      log.warn("{}{}", ExceptionCode.FAIL_FILE_MIMETYPE, multipartFile.getOriginalFilename());
       throw new BusinessException(ExceptionCode.FAIL_FILE_MIMETYPE);
     }
   }
@@ -204,11 +173,11 @@ public class FileUtils {
   // 업로드된 파일의 검증(File 이용)
   public void validateFile(final File file) {
     if (FileType.ILLEGAL.extList.contains(getExtension(file))) {
-      log.warn("{}{}", ExceptionCode.FAIL_FILE_SIZE.toString(), file.getAbsolutePath());
+      log.warn("{}{}", ExceptionCode.FAIL_FILE_SIZE, file.getAbsolutePath());
       throw new BusinessException(ExceptionCode.FAIL_FILE_SIZE);
     }
     if (FileType.ILLEGAL.mimeTypeList.contains(getMimeType(file))) {
-      log.warn("{}{}", ExceptionCode.FAIL_FILE_MIMETYPE.toString(), file.getAbsolutePath());
+      log.warn("{}{}", ExceptionCode.FAIL_FILE_MIMETYPE, file.getAbsolutePath());
       throw new BusinessException(ExceptionCode.FAIL_FILE_MIMETYPE);
     }
   }
@@ -239,11 +208,11 @@ public class FileUtils {
   public void validateFile(final File file, final FileType fileType) {
     try {
       if (!fileType.extList.contains(getExtension(file))) {
-        log.warn("{}{}", ExceptionCode.FAIL_FILE_SIZE.toString(), file.getAbsolutePath());
+        log.warn("{}{}", ExceptionCode.FAIL_FILE_SIZE, file.getAbsolutePath());
         throw new BusinessException(ExceptionCode.FAIL_FILE_SIZE);
       }
       if (!fileType.mimeTypeList.contains(getMimeType(file))) {
-        log.warn("{}{}", ExceptionCode.FAIL_FILE_MIMETYPE.toString(), file.getAbsolutePath());
+        log.warn("{}{}", ExceptionCode.FAIL_FILE_MIMETYPE, file.getAbsolutePath());
         throw new BusinessException(ExceptionCode.FAIL_FILE_MIMETYPE);
       }
 
@@ -283,11 +252,6 @@ public class FileUtils {
     return e;
   }
 
-  public boolean isFileType(final MultipartFile multipartFile, final FileType fileType) {
-    return (fileType.extList.contains(getExtension(multipartFile))
-        && fileType.mimeTypeList.contains(getMimeType(multipartFile)));
-  }
-
   public boolean isFileType(final File file, final FileType fileType) {
     return (fileType.extList.contains(getExtension(file))
         && fileType.mimeTypeList.contains(getMimeType(file)));
@@ -315,42 +279,6 @@ public class FileUtils {
       log.warn(ExceptionUtils.getStackTrace(e));
       throw new BusinessException(e);
     }
-  }
-
-  public String getFullName(final MultipartFile multipartFile) {
-    if (multipartFile == null) {
-      return null;
-    }
-    return getFullName(multipartFile.getOriginalFilename());
-  }
-
-  public String getFullName(final File file) {
-    if (file == null) {
-      return null;
-    }
-    return getFullName(file.getName());
-  }
-
-  public String getFullName(final String fileName) {
-    return FilenameUtils.getName(fileName);
-  }
-
-  public String getBaseName(final MultipartFile multipartFile) {
-    if (multipartFile == null) {
-      return null;
-    }
-    return getBaseName(multipartFile.getOriginalFilename());
-  }
-
-  public String getBaseName(final File file) {
-    if (file == null) {
-      return null;
-    }
-    return getBaseName(file.getName());
-  }
-
-  public String getBaseName(final String fileName) {
-    return FilenameUtils.getBaseName(fileName);
   }
 
   public String getExtension(final MultipartFile multipartFile) {
