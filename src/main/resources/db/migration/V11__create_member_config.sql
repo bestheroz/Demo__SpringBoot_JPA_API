@@ -2,7 +2,6 @@ CREATE TABLE `member_config`
 (
     `id`               BIGINT(20) PRIMARY KEY AUTO_INCREMENT,
     `member_id`        BIGINT(20)            NOT NULL,
-    `language`         VARCHAR(4)            NOT NULL,
     `global_theme`     VARCHAR(16)           NOT NULL,
     `toolbar_theme`    VARCHAR(16)           NOT NULL,
     `menu_theme`       VARCHAR(16)           NOT NULL,

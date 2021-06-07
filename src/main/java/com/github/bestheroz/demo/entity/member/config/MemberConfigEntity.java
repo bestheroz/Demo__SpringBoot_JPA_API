@@ -30,7 +30,6 @@ public class MemberConfigEntity extends AbstractCreatedUpdateEntity implements S
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String language;
   private String globalTheme;
   private String toolbarTheme;
   private String menuTheme;
