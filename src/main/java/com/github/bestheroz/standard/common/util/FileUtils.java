@@ -23,6 +23,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tika.Tika;
+import org.springframework.core.env.Environment;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,11 +32,19 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 @UtilityClass
 @Slf4j
 public class FileUtils {
-  private final String FILE_ROOT_PATH = System.getProperty("java.io.tmpdir");
+  private final String FILE_ROOT_PATH = "/files/";
   private final String STR_DOT = ".";
   private final String STR_INFO_MESSAGE = "Target for uploading file : {}";
   private final String STR_UNDERLINE = "_";
   private final Tika TIKA_INSTANCE = new Tika();
+
+  private File getRootPath() {
+    if (AccessBeanUtils.getBean(Environment.class).getActiveProfiles()[0].equals("local")) {
+      return org.apache.commons.io.FileUtils.getTempDirectory();
+    } else {
+      return org.apache.commons.io.FileUtils.getFile(FILE_ROOT_PATH);
+    }
+  }
 
   public void delete(final File file) {
     try {
@@ -93,7 +102,7 @@ public class FileUtils {
   }
 
   public File getFile(final String filePath) {
-    return org.apache.commons.io.FileUtils.getFile(new File(FILE_ROOT_PATH), filePath);
+    return org.apache.commons.io.FileUtils.getFile(getRootPath(), filePath);
   }
 
   public File getFile(final String dirPath, final String filePath) {
@@ -113,7 +122,7 @@ public class FileUtils {
   public String upload(
       @NotNull final String targetDirPath, @NotNull final MultipartFile multipartFile) {
     if (multipartFile == null) {
-      throw BusinessException.ERROR_SYSTEM;
+      throw new BusinessException(ExceptionCode.ERROR_SYSTEM);
     }
     final File file = uploadMultipartFile(targetDirPath, multipartFile);
     log.info(STR_INFO_MESSAGE, file.getAbsolutePath());
