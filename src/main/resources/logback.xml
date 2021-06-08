@@ -8,8 +8,8 @@
       <file>${LOG_DIR}/debuglog.log</file>
       <append>true</append>
       <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-        <fileNamePattern>${LOG_DIR}/debuglog-%d{yyyy-MM-dd}.log</fileNamePattern>
-        <maxHistory>10</maxHistory>
+        <fileNamePattern>${LOG_DIR}/debuglog-%d{yyyyMMdd}.log</fileNamePattern>
+        <maxHistory>30</maxHistory>
       </rollingPolicy>
       <withJansi>true</withJansi>
       <encoder>
@@ -25,8 +25,8 @@
       <file>${LOG_DIR}/errlog.log</file>
       <append>true</append>
       <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-        <fileNamePattern>${LOG_DIR}/errlog-%d{yyyy-MM-dd}.log</fileNamePattern>
-        <maxHistory>10</maxHistory>
+        <fileNamePattern>${LOG_DIR}/errlog-%d{yyyyMMdd}.log</fileNamePattern>
+        <maxHistory>30</maxHistory>
       </rollingPolicy>
       <withJansi>true</withJansi>
       <encoder>
