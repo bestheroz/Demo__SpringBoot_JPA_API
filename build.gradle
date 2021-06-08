@@ -3,6 +3,7 @@ plugins {
     id "java"
     id "idea"
     id "com.diffplug.spotless" version "5.12.5"
+    id "com.github.ben-manes.versions" version "0.39.0"
 }
 
 repositories {
@@ -18,7 +19,7 @@ ext.comonsIoVersion = "2.9.0"
 ext.tikaVersion = "1.26"
 ext.poiVersion = "5.0.0"
 ext.sentryVersion = "5.0.1"
-ext.flywayVersion = "7.7.0"
+ext.flywayVersion = "7.9.2"
 ext.hibernateTypesVersion = "2.11.1"
 ext.springdoc = "1.5.9"
 ext.h2Version = "1.4.200"
