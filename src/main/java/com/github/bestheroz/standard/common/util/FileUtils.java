@@ -126,7 +126,7 @@ public class FileUtils {
     }
     final File file = uploadMultipartFile(targetDirPath, multipartFile);
     log.info(STR_INFO_MESSAGE, file.getAbsolutePath());
-    return file.getName();
+    return StringUtils.remove(file.getAbsolutePath(), getRootPath().getAbsolutePath());
   }
 
   public List<String> uploadAll(
