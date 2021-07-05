@@ -123,11 +123,11 @@ INTO menu
  CREATED,
  UPDATED_BY,
  UPDATED)
-VALUES ('개발자',
+VALUES ('만든이',
         'G',
         0,
-        9,
-        'mdi-developer-board',
+        6,
+        'mdi-account-hard-hat',
         'developer',
         NOW(),
         'developer',
@@ -144,17 +144,85 @@ INTO menu
  CREATED,
  UPDATED_BY,
  UPDATED)
-SELECT 'Picker',
+SELECT 'Github',
+       'W',
+       ID,
+       7,
+       'https://github.com/bestheroz/',
+       'developer',
+       NOW(),
+       'developer',
+       NOW()
+FROM menu
+WHERE NAME = '만든이';
+
+
+INSERT
+INTO menu
+(NAME,
+ TYPE,
+ PARENT_ID,
+ DISPLAY_ORDER,
+ URL,
+ CREATED_BY,
+ CREATED,
+ UPDATED_BY,
+ UPDATED)
+SELECT 'Blog',
+       'W',
+       ID,
+       8,
+       'https://bestheroz.blog.me',
+       'developer',
+       NOW(),
+       'developer',
+       NOW()
+FROM menu
+WHERE NAME = '만든이';
+
+
+INSERT
+INTO menu
+(NAME,
+ TYPE,
+ PARENT_ID,
+ DISPLAY_ORDER,
+ ICON,
+ CREATED_BY,
+ CREATED,
+ UPDATED_BY,
+ UPDATED)
+VALUES ('메뉴그룹1',
+        'G',
+        0,
+        9,
+        'mdi-numeric-1-box-outline',
+        'developer',
+        NOW(),
+        'developer',
+        NOW());
+
+INSERT
+INTO menu
+(NAME,
+ TYPE,
+ PARENT_ID,
+ DISPLAY_ORDER,
+ CREATED_BY,
+ CREATED,
+ UPDATED_BY,
+ UPDATED)
+SELECT '메뉴1',
        'P',
        ID,
        10,
-       '/developer/picker',
        'developer',
        NOW(),
        'developer',
        NOW()
 FROM menu
-WHERE NAME = '개발자';
+WHERE NAME = '메뉴그룹1';
+
 
 INSERT
 INTO menu
@@ -162,22 +230,21 @@ INTO menu
  TYPE,
  PARENT_ID,
  DISPLAY_ORDER,
- URL,
  CREATED_BY,
  CREATED,
  UPDATED_BY,
  UPDATED)
-SELECT '파일 업로드',
+SELECT '메뉴2',
        'P',
        ID,
        11,
-       '/developer/file-uploader',
        'developer',
        NOW(),
        'developer',
        NOW()
 FROM menu
-WHERE NAME = '개발자';
+WHERE NAME = '메뉴그룹1';
+
 
 INSERT
 INTO menu
@@ -185,20 +252,60 @@ INTO menu
  TYPE,
  PARENT_ID,
  DISPLAY_ORDER,
- URL,
+ ICON,
  CREATED_BY,
  CREATED,
  UPDATED_BY,
  UPDATED)
-SELECT '텍스트 에디터',
+VALUES ('메뉴그룹2',
+        'G',
+        0,
+        12,
+        'mdi-numeric-2-box-outline',
+        'developer',
+        NOW(),
+        'developer',
+        NOW());
+
+INSERT
+INTO menu
+(NAME,
+ TYPE,
+ PARENT_ID,
+ DISPLAY_ORDER,
+ CREATED_BY,
+ CREATED,
+ UPDATED_BY,
+ UPDATED)
+SELECT '메뉴1',
        'P',
        ID,
-       12,
-       '/developer/text-editor',
+       13,
        'developer',
        NOW(),
        'developer',
        NOW()
 FROM menu
-WHERE NAME = '개발자';
+WHERE NAME = '메뉴그룹2';
 
+
+INSERT
+INTO menu
+(NAME,
+ TYPE,
+ PARENT_ID,
+ DISPLAY_ORDER,
+ CREATED_BY,
+ CREATED,
+ UPDATED_BY,
+ UPDATED)
+SELECT '메뉴2',
+       'P',
+       ID,
+       14,
+       'developer',
+       NOW(),
+       'developer',
+       NOW()
+FROM menu
+WHERE NAME = '메뉴그룹2';

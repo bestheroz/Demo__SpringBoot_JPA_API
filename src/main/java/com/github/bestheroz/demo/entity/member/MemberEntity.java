@@ -1,8 +1,8 @@
 package com.github.bestheroz.demo.entity.member;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.github.bestheroz.demo.entity.AbstractCreatedUpdateEntity;
 import com.github.bestheroz.demo.entity.member.config.MemberConfigEntity;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.time.Instant;
 import javax.persistence.CascadeType;

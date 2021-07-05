@@ -31,6 +31,7 @@ public class MemberConfigEntity extends AbstractCreatedUpdateEntity implements S
   private Long id;
 
   private String globalTheme;
+  private String toolbarTheme;
   private String menuTheme;
   private Boolean contentBoxed;
   private String primaryColor;
