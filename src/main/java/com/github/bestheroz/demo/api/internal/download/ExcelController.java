@@ -2,7 +2,6 @@ package com.github.bestheroz.demo.api.internal.download;
 
 import com.github.bestheroz.demo.entity.code.CodeRepository;
 import com.github.bestheroz.demo.entity.member.MemberRepository;
-import com.github.bestheroz.standard.common.code.CodeService;
 import com.github.bestheroz.standard.common.file.excel.ExcelService;
 import com.github.bestheroz.standard.common.file.excel.ExcelVO;
 import com.github.bestheroz.standard.context.abstractview.AbstractExcelXView;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
     exposedHeaders = {"Content-Disposition"})
 @Slf4j
 public class ExcelController {
-  @Resource private CodeService codeService;
   @Resource private MemberRepository memberRepository;
   @Resource private CodeRepository codeRepository;
 
@@ -40,7 +38,7 @@ public class ExcelController {
         "권한",
         "authority",
         ExcelService.CellType.STRING_CENTER,
-        this.codeRepository.getCodesByType("AUTHORITY"));
+        this.codeRepository.getCodesByTypeOrderByDisplayOrder("AUTHORITY"));
     AbstractExcelXView.addHeader(excelVOList, "만료일", "expired", ExcelService.CellType.DATE);
     AbstractExcelXView.addHeader(excelVOList, "사용 가능", "available", ExcelService.CellType.STRING);
     AbstractExcelXView.addHeader(excelVOList, "작업 일시", "updated", ExcelService.CellType.DATE);

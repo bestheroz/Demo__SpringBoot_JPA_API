@@ -1,26 +1,18 @@
 package com.github.bestheroz.demo.api.internal.auth;
 
-import com.github.bestheroz.demo.entity.authority.AuthorityEntity;
-import com.github.bestheroz.demo.entity.authority.AuthorityRepository;
-import com.github.bestheroz.demo.entity.authority.item.AuthorityItemEntity;
 import com.github.bestheroz.demo.entity.member.MemberRepository;
 import com.github.bestheroz.demo.entity.menu.MenuRepository;
 import com.github.bestheroz.standard.common.authenticate.JwtTokenProvider;
 import com.github.bestheroz.standard.common.authenticate.UserVO;
-import com.github.bestheroz.standard.common.code.CodeVO;
 import com.github.bestheroz.standard.common.exception.BusinessException;
 import com.github.bestheroz.standard.common.exception.ExceptionCode;
 import com.github.bestheroz.standard.common.util.AuthenticationUtils;
-import com.github.bestheroz.standard.common.util.MapperUtils;
-import java.math.BigInteger;
 import java.time.Instant;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Sort;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -34,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AuthService implements UserDetailsService {
   @Resource private MemberRepository memberRepository;
-  @Resource private AuthorityRepository authorityRepository;
   @Resource private MenuRepository menuRepository;
 
   @Override
@@ -50,7 +41,7 @@ public class AuthService implements UserDetailsService {
                     memberEntity.getId(),
                     memberEntity.getUserId(),
                     memberEntity.getName(),
-                    memberEntity.getAuthorityId()))
+                    memberEntity.getAuthority()))
         .orElseThrow(() -> new UsernameNotFoundException("No user found by `" + username + "`"));
   }
 
@@ -86,7 +77,10 @@ public class AuthService implements UserDetailsService {
               }
 
               memberEntity.setLoginFailCnt(0);
-              final UserVO userVO = MapperUtils.toObject(memberEntity, UserVO.class);
+              log.debug("{}", memberEntity);
+              final UserVO userVO = new UserVO();
+              BeanUtils.copyProperties(memberEntity, userVO);
+              log.debug("{}", userVO);
               final String accessToken = JwtTokenProvider.createAccessToken(userVO);
               final String refreshToken = JwtTokenProvider.createRefreshToken(userVO);
               SecurityContextHolder.getContext()
@@ -113,9 +107,9 @@ public class AuthService implements UserDetailsService {
         .findByUserIdAndToken(JwtTokenProvider.getUserId(refreshToken), refreshToken)
         .map(
             memberEntity -> {
-              final String newAccessToken =
-                  JwtTokenProvider.createAccessToken(
-                      MapperUtils.toObject(memberEntity, UserVO.class));
+              final UserVO userVO = new UserVO();
+              BeanUtils.copyProperties(memberEntity, userVO);
+              final String newAccessToken = JwtTokenProvider.createAccessToken(userVO);
               SecurityContextHolder.getContext()
                   .setAuthentication(JwtTokenProvider.getAuthentication(newAccessToken));
               return newAccessToken;
@@ -123,7 +117,7 @@ public class AuthService implements UserDetailsService {
         .orElseThrow(
             () -> {
               log.info("invalid refresh-token");
-              return BusinessException.FAIL_TRY_LOGIN_FIRST;
+              return new BusinessException(ExceptionCode.FAIL_TRY_LOGIN_FIRST);
             });
   }
 
@@ -136,38 +130,13 @@ public class AuthService implements UserDetailsService {
                 log.warn(ExceptionCode.FAIL_INVALID_REQUEST.toString());
                 throw new BusinessException(ExceptionCode.FAIL_INVALID_REQUEST);
               }
+
               memberEntity.setPassword(password);
               memberEntity.setLoginFailCnt(0);
-              return MapperUtils.toObject(this.memberRepository.save(memberEntity), UserVO.class);
+              final UserVO userVO = new UserVO();
+              BeanUtils.copyProperties(this.memberRepository.save(memberEntity), userVO);
+              return userVO;
             })
-        .orElseThrow(() -> BusinessException.FAIL_NO_DATA_SUCCESS);
-  }
-
-  @Transactional
-  AuthorityEntity getAuthorityEntity(final Long id) {
-    final AuthorityEntity authorityEntity =
-        this.authorityRepository
-            .findById(id)
-            .orElseThrow(() -> BusinessException.FAIL_NO_DATA_SUCCESS);
-    if (authorityEntity.getId().equals(1L)) {
-      authorityEntity.setItems(
-          this.menuRepository.findAll(Sort.by(Sort.DEFAULT_DIRECTION, "displayOrder")).stream()
-              .map(
-                  item -> {
-                    final AuthorityItemEntity authorityItemEntity =
-                        MapperUtils.toObject(item, AuthorityItemEntity.class);
-                    authorityItemEntity.setMenu(item);
-                    authorityItemEntity.setTypesJson(List.of("VIEW", "WRITE", "DELETE"));
-                    return authorityItemEntity;
-                  })
-              .collect(Collectors.toList()));
-    }
-    return authorityEntity;
-  }
-
-  public List<CodeVO<Long>> getCodes() {
-    return this.authorityRepository.getCodes().stream()
-        .map(code -> new CodeVO<>(((BigInteger) code[0]).longValue(), (String) code[1]))
-        .collect(Collectors.toList());
+        .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NO_DATA_SUCCESS));
   }
 }

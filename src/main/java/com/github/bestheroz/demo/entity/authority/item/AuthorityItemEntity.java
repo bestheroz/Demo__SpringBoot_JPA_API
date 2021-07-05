@@ -1,26 +1,20 @@
 package com.github.bestheroz.demo.entity.authority.item;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.bestheroz.demo.entity.AbstractCreatedUpdateEntity;
-import com.github.bestheroz.demo.entity.authority.AuthorityEntity;
 import com.github.bestheroz.demo.entity.menu.MenuEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -37,6 +31,7 @@ public class AuthorityItemEntity extends AbstractCreatedUpdateEntity implements 
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  private String authority;
   private Integer displayOrder;
 
   @Type(type = "jsonString")
@@ -45,10 +40,4 @@ public class AuthorityItemEntity extends AbstractCreatedUpdateEntity implements 
   @OneToOne
   @JoinColumn(name = "menuId", referencedColumnName = "id", nullable = false)
   private MenuEntity menu;
-
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(nullable = false)
-  @OnDelete(action = OnDeleteAction.CASCADE)
-  @JsonBackReference
-  private AuthorityEntity authority;
 }

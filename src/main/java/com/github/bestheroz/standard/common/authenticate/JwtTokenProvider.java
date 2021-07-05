@@ -29,7 +29,7 @@ public class JwtTokenProvider {
     Assert.notNull(userVO, "userVO parameter must not be empty or null");
     Assert.hasText(userVO.getUserId(), "userId parameter must not be empty or null");
     Assert.hasText(userVO.getName(), "userName parameter must not be empty or null");
-    Assert.notNull(userVO.getAuthorityId(), "authorityId parameter must not be empty or null");
+    Assert.notNull(userVO.getAuthority(), "authorityId parameter must not be empty or null");
     return JWT.create()
         .withClaim("userId", userVO.getUserId())
         .withClaim("userVO", MapperUtils.toString(userVO))
@@ -54,7 +54,7 @@ public class JwtTokenProvider {
     Assert.hasText(token, "token parameter must not be empty or null");
     final UserVO userVO = getUserVO(token);
     final UserDetails userDetails =
-        new UserVO(userVO.getId(), userVO.getUserId(), userVO.getName(), userVO.getAuthorityId());
+        new UserVO(userVO.getId(), userVO.getUserId(), userVO.getName(), userVO.getAuthority());
     return new UsernamePasswordAuthenticationToken(
         userDetails, StringUtils.EMPTY, userDetails.getAuthorities());
   }

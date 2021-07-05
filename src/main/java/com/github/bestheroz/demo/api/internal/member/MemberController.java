@@ -1,7 +1,7 @@
 package com.github.bestheroz.demo.api.internal.member;
 
-import com.github.bestheroz.demo.entity.authority.AuthorityRepository;
 import com.github.bestheroz.demo.entity.authority.item.AuthorityItemEntity;
+import com.github.bestheroz.demo.entity.authority.item.AuthorityItemRepository;
 import com.github.bestheroz.demo.entity.code.CodeRepository;
 import com.github.bestheroz.demo.entity.member.MemberEntity;
 import com.github.bestheroz.demo.entity.member.MemberRepository;
@@ -13,10 +13,8 @@ import com.github.bestheroz.standard.common.exception.ExceptionCode;
 import com.github.bestheroz.standard.common.response.ApiResult;
 import com.github.bestheroz.standard.common.response.Result;
 import com.github.bestheroz.standard.common.util.AuthenticationUtils;
-import com.github.bestheroz.standard.common.util.MapperUtils;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -34,10 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class MemberController {
   @Resource private MemberRepository memberRepository;
-  @Resource private AuthorityRepository authorityRepository;
   @Resource private CodeRepository codeRepository;
   @Resource private MenuRepository menuRepository;
   @Resource private MemberConfigRepository memberConfigRepository;
+  @Resource private AuthorityItemRepository authorityItemRepository;
 
   @GetMapping(value = "codes")
   ResponseEntity<ApiResult> getItems() {
@@ -139,26 +137,22 @@ public class MemberController {
 
   @GetMapping(value = "mine/authority")
   ResponseEntity<ApiResult> getAuthority() {
-    return Result.ok(
-        this.authorityRepository
-            .findById(AuthenticationUtils.getLoginVO().getAuthorityId())
-            .map(
-                authority -> {
-                  if (authority.getCode().equals("SUPER")) {
-                    authority.setItems(
-                        this.menuRepository.findAllByOrderByDisplayOrderAsc().stream()
-                            .map(
-                                menu -> {
-                                  final AuthorityItemEntity authorityItemEntity =
-                                      MapperUtils.toObject(menu, AuthorityItemEntity.class);
-                                  authorityItemEntity.setMenu(menu);
-                                  authorityItemEntity.setTypesJson(List.of("VIEW"));
-                                  return authorityItemEntity;
-                                })
-                            .collect(Collectors.toList()));
-                  }
-                  return authority;
-                })
-            .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_MEMBER)));
+    if (AuthenticationUtils.getLoginVO().getAuthority().equals("SUPER")) {
+      return Result.ok(
+          this.menuRepository.findAllByOrderByDisplayOrderAsc().stream()
+              .map(
+                  menu -> {
+                    final AuthorityItemEntity authorityItemEntity = new AuthorityItemEntity();
+                    authorityItemEntity.setAuthority("SUPER");
+                    authorityItemEntity.setDisplayOrder(1);
+                    authorityItemEntity.setTypesJson(List.of("VIEW", "WRITE", "DELETE"));
+                    authorityItemEntity.setMenu(menu);
+                    return authorityItemEntity;
+                  }));
+    } else {
+      return Result.ok(
+          this.authorityItemRepository.findAllByAuthorityOrderByDisplayOrderAsc(
+              AuthenticationUtils.getLoginVO().getAuthority()));
+    }
   }
 }

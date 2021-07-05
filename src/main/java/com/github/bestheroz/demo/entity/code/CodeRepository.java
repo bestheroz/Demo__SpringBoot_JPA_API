@@ -15,17 +15,10 @@ public interface CodeRepository extends CrudRepository<CodeEntity, Long> {
   List<CodeEntity> findAllByTypeOrderByDisplayOrderAsc(String type);
 
   @Query(
-      "select new com.github.bestheroz.standard.common.code.CodeVO(c.value, c.name) "
-          + "from code c inner join code_authority ca on ca.code = c "
-          + "where c.type = :type and ca.authorityId= :authorityId "
-          + "order by c.displayOrder asc")
-  List<CodeVO<String>> getCodesByTypeAndAuthorityId(String type, Long authorityId);
-
-  @Query(
       value =
           "select new com.github.bestheroz.standard.common.code.CodeVO(c.value, c.name) "
               + "from code c where c.type = :type order by c.displayOrder asc")
-  List<CodeVO<String>> getCodesByType(String type);
+  List<CodeVO<String>> getCodesByTypeOrderByDisplayOrder(String type);
 
   @Query(
       value =
