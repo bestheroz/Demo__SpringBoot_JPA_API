@@ -53,6 +53,8 @@ public class AbstractDownloadView extends AbstractView {
 
       if (FileUtils.isFileType(file, FileType.PDF)) {
         response.setContentType("application/pdf");
+      } else if (FileUtils.isFileType(file, FileType.IMAGE)) {
+        response.setContentType(FileUtils.getMimeType(file));
       } else {
         response.setContentType("application/download;charset=utf-8");
 
