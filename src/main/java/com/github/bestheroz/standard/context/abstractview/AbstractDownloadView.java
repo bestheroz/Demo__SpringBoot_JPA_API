@@ -5,13 +5,18 @@ import com.github.bestheroz.standard.common.exception.ExceptionCode;
 import com.github.bestheroz.standard.common.util.FileUtils;
 import com.github.bestheroz.standard.common.util.FileUtils.FileType;
 import com.github.bestheroz.standard.common.util.NullUtils;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.tika.io.FilenameUtils;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.view.AbstractView;
 
@@ -44,7 +49,7 @@ public class AbstractDownloadView extends AbstractView {
     try (final OutputStream out = response.getOutputStream();
         final FileInputStream fis = new FileInputStream(file)) {
       log.info("file.getPath() : {}", file.getPath());
-      log.info("file.getName() : {}", file.getName());
+      log.info("file.getName() : {}", FilenameUtils.getName(file.getName()));
 
       if (FileUtils.isFileType(file, FileType.PDF)) {
         response.setContentType("application/pdf");
@@ -55,7 +60,8 @@ public class AbstractDownloadView extends AbstractView {
 
         String oriFileName = (String) model.get(AbstractDownloadView.DOWNLOAD_ORI_FILE_NAME);
         if (StringUtils.isEmpty(oriFileName)) {
-          oriFileName = FileUtils.getEncodedFileName(request, file.getName());
+          oriFileName =
+              FileUtils.getEncodedFileName(request, FilenameUtils.getName(file.getName()));
         }
         response.setHeader(
             "Content-Disposition",

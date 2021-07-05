@@ -51,7 +51,9 @@ public class DataTableFilterDTO {
         for (final Method method : filter.getClass().getDeclaredMethods()) {
           if (methodString.equals(method.getName())) {
             try {
-              if (method.getParameterTypes()[0].getSimpleName().equals("Integer")) {
+              if (method.getParameterTypes()[0].getSimpleName().equals("Long")) {
+                method.invoke(filter, Long.valueOf(value));
+              } else if (method.getParameterTypes()[0].getSimpleName().equals("Integer")) {
                 method.invoke(filter, Integer.valueOf(value));
               } else if (method.getParameterTypes()[0].getSimpleName().equals("Boolean")) {
                 method.invoke(filter, Boolean.valueOf(value));
@@ -59,7 +61,7 @@ public class DataTableFilterDTO {
                 method.invoke(filter, value);
               }
               if (StringUtils.equalsAny(
-                  StringUtils.substringAfter(key, ":"), "equals", "set", "booleanEquals")) {
+                  StringUtils.substringAfter(key, ":"), "equals", "equals", "booleanEquals")) {
                 matcher = matcher.withMatcher(columnName, GenericPropertyMatchers.exact());
               } else {
                 matcher =

@@ -77,7 +77,7 @@ public class MemberController {
         .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_MEMBER));
   }
 
-  @PostMapping(value = "mine/changePassword")
+  @PatchMapping(value = "mine/password")
   public ResponseEntity<ApiResult> changePassword(@RequestBody final Map<String, String> payload) {
     return this.memberRepository
         .findById(AuthenticationUtils.getId())

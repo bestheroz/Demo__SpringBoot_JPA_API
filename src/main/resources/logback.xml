@@ -9,7 +9,7 @@
       <append>true</append>
       <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
         <fileNamePattern>${LOG_DIR}/debuglog-%d{yyyy-MM-dd}.log</fileNamePattern>
-        <maxHistory>10</maxHistory>
+        <maxHistory>30</maxHistory>
       </rollingPolicy>
       <withJansi>true</withJansi>
       <encoder>
@@ -26,7 +26,7 @@
       <append>true</append>
       <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
         <fileNamePattern>${LOG_DIR}/errlog-%d{yyyy-MM-dd}.log</fileNamePattern>
-        <maxHistory>10</maxHistory>
+        <maxHistory>30</maxHistory>
       </rollingPolicy>
       <withJansi>true</withJansi>
       <encoder>
@@ -48,6 +48,7 @@
   </springProfile>
 
   <logger name="org.springframework" level="INFO"/>
+  <logger name="_org.springframework" level="INFO"/>
   <logger
     name="org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor"
     level="DEBUG"/>
