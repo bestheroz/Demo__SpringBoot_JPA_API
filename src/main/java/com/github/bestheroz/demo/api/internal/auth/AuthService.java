@@ -137,6 +137,7 @@ public class AuthService implements UserDetailsService {
                 throw new BusinessException(ExceptionCode.FAIL_INVALID_REQUEST);
               }
               memberEntity.setPassword(password);
+              memberEntity.setLoginFailCnt(0);
               return MapperUtils.toObject(this.memberRepository.save(memberEntity), UserVO.class);
             })
         .orElseThrow(() -> BusinessException.FAIL_NO_DATA_SUCCESS);

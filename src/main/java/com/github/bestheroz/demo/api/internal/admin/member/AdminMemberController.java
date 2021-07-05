@@ -87,6 +87,7 @@ public class AdminMemberController {
             .map(
                 (item) -> {
                   item.setPassword(null);
+                  item.setLoginFailCnt(0);
                   return this.memberRepository.save(item);
                 })
             .orElseThrow(() -> BusinessException.FAIL_NO_DATA_SUCCESS));
