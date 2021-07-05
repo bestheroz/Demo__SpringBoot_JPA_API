@@ -1,7 +1,7 @@
 package com.github.bestheroz.demo.entity.authority.item;
 
-import com.github.bestheroz.demo.entity.menu.MenuEntity;
 import com.github.bestheroz.demo.entity.AbstractCreatedUpdateEntity;
+import com.github.bestheroz.demo.entity.menu.MenuEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import java.io.Serializable;
 import java.util.List;
