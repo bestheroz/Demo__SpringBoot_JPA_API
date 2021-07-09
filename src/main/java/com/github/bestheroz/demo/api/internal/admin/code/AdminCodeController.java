@@ -5,6 +5,8 @@ import com.github.bestheroz.demo.entity.code.CodeRepository;
 import com.github.bestheroz.standard.common.exception.BusinessException;
 import com.github.bestheroz.standard.common.response.ApiResult;
 import com.github.bestheroz.standard.common.response.Result;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -30,7 +32,7 @@ public class AdminCodeController {
     return Result.ok(this.codeRepository.getTypes());
   }
 
-  @GetMapping()
+  @GetMapping
   ResponseEntity<ApiResult> getItems(@RequestParam(value = "type") final String type) {
     return Result.ok(this.codeRepository.findAllByTypeOrderByDisplayOrderAsc(type));
   }
@@ -65,5 +67,11 @@ public class AdminCodeController {
                   return item;
                 })
             .orElseThrow(() -> BusinessException.FAIL_NO_DATA_SUCCESS));
+  }
+
+  @PostMapping(value = "save")
+  public ResponseEntity<ApiResult> save(@RequestBody final List<CodeEntity> payload) {
+    return Result.created(
+        payload.stream().map(code -> this.codeRepository.save(code)).collect(Collectors.toList()));
   }
 }

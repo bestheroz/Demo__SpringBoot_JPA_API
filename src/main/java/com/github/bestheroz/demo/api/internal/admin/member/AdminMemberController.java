@@ -3,7 +3,7 @@ package com.github.bestheroz.demo.api.internal.admin.member;
 import com.github.bestheroz.demo.entity.member.MemberEntity;
 import com.github.bestheroz.demo.entity.member.MemberRepository;
 import com.github.bestheroz.standard.common.exception.BusinessException;
-import com.github.bestheroz.standard.common.filter.DataTableFilterDTO;
+import com.github.bestheroz.standard.common.filter.DataTableSortDTO;
 import com.github.bestheroz.standard.common.response.ApiResult;
 import com.github.bestheroz.standard.common.response.Result;
 import javax.annotation.Resource;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -25,11 +26,16 @@ public class AdminMemberController {
   @Resource private MemberRepository memberRepository;
 
   @GetMapping
-  ResponseEntity<ApiResult> getItems(final DataTableFilterDTO dataTableFilterDTO) {
+  ResponseEntity<ApiResult> getItems(
+      final DataTableSortDTO dataTableSortDTO,
+      final AdminMemberDTO adminMemberDTO,
+      @RequestParam(required = false) final String search) {
     return Result.ok(
-        this.memberRepository.findAll(
-            dataTableFilterDTO.getExample(new MemberEntity()),
-            dataTableFilterDTO.getPageRequest()));
+        this.memberRepository.findAllByDTO(
+            search,
+            adminMemberDTO.getAvailableList(),
+            adminMemberDTO.getAuthorityList(),
+            dataTableSortDTO.getPageRequest()));
   }
 
   @GetMapping(value = "{id}")
