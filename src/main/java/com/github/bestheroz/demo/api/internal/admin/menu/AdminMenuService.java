@@ -5,6 +5,7 @@ import com.github.bestheroz.demo.entity.menu.MenuEntity;
 import com.github.bestheroz.demo.entity.menu.MenuRepository;
 import com.github.bestheroz.standard.common.exception.BusinessException;
 import javax.annotation.Resource;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +18,11 @@ public class AdminMenuService {
   public MenuEntity put(final MenuEntity payload, final Long id) {
     return this.menuRepository
         .findById(id)
-        .map((item) -> this.menuRepository.save(item))
+        .map(
+            (item) -> {
+              BeanUtils.copyProperties(payload, item);
+              return this.menuRepository.save(item);
+            })
         .orElseThrow(() -> BusinessException.FAIL_NO_DATA_SUCCESS);
   }
 
