@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("api")
+@RequestMapping("api/excel")
 @CrossOrigin(
     value = {"*"},
     exposedHeaders = {"Content-Disposition"})
@@ -26,7 +26,7 @@ public class ExcelController {
   @Resource private MemberRepository memberRepository;
   @Resource private CodeRepository codeRepository;
 
-  @GetMapping(value = "admin/members/download/excel/")
+  @GetMapping(value = "/members")
   public String excelAdminMembers(final Model model) {
     model.addAttribute(AbstractExcelXView.FILE_NAME, "Member_List");
 
