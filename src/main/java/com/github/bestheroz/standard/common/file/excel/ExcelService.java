@@ -5,8 +5,11 @@ import com.github.bestheroz.standard.common.util.MapperUtils;
 import com.github.bestheroz.standard.context.abstractview.AbstractExcelXView;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -87,14 +90,25 @@ public class ExcelService extends AbstractExcelXView {
       }
       final SXSSFRow row = sheet.createRow(3 + i);
       final Map<String, Object> data = MapperUtils.toMap(listData.get(i));
-      log.debug("{}", data);
+      log.debug("data[{}]: {}", i, data);
       for (int j = 0; j < excelVOs.size(); j++) {
-        final String dbColName = excelVOs.get(j).getDbColName();
-        if (data.get(dbColName) != null) {
-          final String value = String.valueOf(data.get(dbColName));
-          if (StringUtils.isNotEmpty(value)) {
-            this.writeColumnData(excelVOs, j, row.createCell(j), value);
+        Object value = data;
+        for (final String key : StringUtils.split(excelVOs.get(j).getCellKey(), ".")) {
+          log.debug("getSimpleName: {}", value.getClass().getSimpleName());
+          if (Objects.nonNull(value)) {
+            log.debug("value: {}", value);
+            if (value instanceof HashMap) {
+              value = ((Map<String, Object>) value).get(key);
+            } else if (!value.getClass().isPrimitive()
+                && !(value instanceof List)
+                && !(value instanceof ArrayList)) {
+              value = (MapperUtils.toMap(value)).get(key);
+            }
+            log.debug("value2: {}", value);
           }
+        }
+        if (Objects.nonNull(value)) {
+          this.writeColumnData(excelVOs, j, row.createCell(j), String.valueOf(value));
         }
       }
     }
