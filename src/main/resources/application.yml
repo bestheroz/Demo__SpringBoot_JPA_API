@@ -12,20 +12,23 @@ spring:
       chain:
         compressed: true
   jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: none
-    generate-ddl: false
     properties:
       hibernate:
-        format_sql: true
-    database: h2
+        default_batch_fetch_size: 1000
     open-in-view: false
   datasource:
-    driver-class-name: org.h2.Driver
-  h2:
-    console:
-      enabled: true
+    driver-class-name: org.mariadb.jdbc.Driver
+  messages:
+    basename: i18n/exception
+    encoding: UTF-8
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+  flyway:
+    enabled: true
+    baseline-version: 0
+    baseline-on-migrate: true
+    validate-on-migrate: false
 server:
   compression:
     enabled: true
@@ -41,24 +44,21 @@ server:
       force: true
 management:
   endpoint:
-    shutdown:
+    health:
       enabled: true
   endpoints:
     enabled-by-default: false
     web:
       exposure:
-        include: shutdown
-logging:
-  level:
-    org:
-      hibernate:
-        type:
-          descriptor:
-            sql:
-              BasicBinder: trace
+        include: health
 springdoc:
   paths-to-match:
-    - /v1/api/**
+    - /api/v1/**
+decorator:
+  datasource:
+    p6spy:
+      logging: slf4j
+      multiline: true
 ---
 spring:
   config:
@@ -67,6 +67,13 @@ spring:
   datasource:
     url: jdbc:h2:mem:mydb
     username: sa
+    driver-class-name: org.h2.Driver
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 2
+  h2:
+    console:
+      enabled: true
 server:
   port: 8080
 sentry:
@@ -78,11 +85,21 @@ management:
       enabled: false
   endpoints:
     enabled-by-default: false
+environment:
+  app:
+    test: test
 ---
 spring:
   config:
     activate:
       on-profile: dev
+  datasource:
+    url:
+    username:
+    password:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 10
 server:
   port: 8080
 sentry:
@@ -91,16 +108,29 @@ sentry:
   server-name:
   enable-tracing: true
   traces-sample-rate: 1.0
+environment:
+  app:
+    test: test
 ---
 spring:
   config:
     activate:
       on-profile: production
+  datasource:
+    url:
+    username:
+    password:
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 10
 server:
-  port:
+  port: 8000
 sentry:
   dsn: https://7bb0a4fc0ddc4803998ee772401e3cfc@o368486.ingest.sentry.io/5197118
   environment: production
   server-name:
   enable-tracing: true
   traces-sample-rate: 1.0
+environment:
+  app:
+    test: test

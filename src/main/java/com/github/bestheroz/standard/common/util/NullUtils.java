@@ -7,18 +7,18 @@ import java.util.Map;
 import java.util.Set;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @UtilityClass
 public class NullUtils {
+
   // int 도 함께 커버됨
   public boolean equals(final Integer n1, final Integer n2) {
     try {
       return n1 != null && n2 != null && n1.intValue() == n2.intValue();
     } catch (final Throwable e) {
-      log.warn(ExceptionUtils.getStackTrace(e));
+      log.warn(LogUtils.getStackTrace(e));
       return false;
     }
   }
@@ -27,7 +27,7 @@ public class NullUtils {
     try {
       return n1 != null && n2 != null && n1.longValue() == n2.longValue();
     } catch (final Throwable e) {
-      log.warn(ExceptionUtils.getStackTrace(e));
+      log.warn(LogUtils.getStackTrace(e));
       return false;
     }
   }
@@ -36,7 +36,7 @@ public class NullUtils {
     try {
       return file != null && file.exists();
     } catch (final Throwable e) {
-      log.warn(ExceptionUtils.getStackTrace(e));
+      log.warn(LogUtils.getStackTrace(e));
       return false;
     }
   }
@@ -45,7 +45,7 @@ public class NullUtils {
     try {
       return iterator != null && iterator.hasNext();
     } catch (final Throwable e) {
-      log.warn(ExceptionUtils.getStackTrace(e));
+      log.warn(LogUtils.getStackTrace(e));
       return false;
     }
   }
@@ -54,7 +54,7 @@ public class NullUtils {
     try {
       return multipartFile == null || multipartFile.isEmpty();
     } catch (final Throwable e) {
-      log.warn(ExceptionUtils.getStackTrace(e));
+      log.warn(LogUtils.getStackTrace(e));
       return true;
     }
   }
@@ -63,7 +63,7 @@ public class NullUtils {
     try {
       return size(list) == 0;
     } catch (final Throwable e) {
-      log.warn(ExceptionUtils.getStackTrace(e));
+      log.warn(LogUtils.getStackTrace(e));
       return true;
     }
   }
@@ -72,7 +72,7 @@ public class NullUtils {
     try {
       return size(list) == 0;
     } catch (final Throwable e) {
-      log.warn(ExceptionUtils.getStackTrace(e));
+      log.warn(LogUtils.getStackTrace(e));
       return true;
     }
   }
@@ -93,7 +93,7 @@ public class NullUtils {
     try {
       return list == null ? 0 : list.size();
     } catch (final Throwable e) {
-      log.warn(ExceptionUtils.getStackTrace(e));
+      log.warn(LogUtils.getStackTrace(e));
       return 0;
     }
   }
@@ -102,7 +102,7 @@ public class NullUtils {
     try {
       return list == null ? 0 : list.size();
     } catch (final Throwable e) {
-      log.warn(ExceptionUtils.getStackTrace(e));
+      log.warn(LogUtils.getStackTrace(e));
       return 0;
     }
   }
@@ -111,7 +111,7 @@ public class NullUtils {
     try {
       return map == null ? 0 : map.size();
     } catch (final Throwable e) {
-      log.warn(ExceptionUtils.getStackTrace(e));
+      log.warn(LogUtils.getStackTrace(e));
       return 0;
     }
   }

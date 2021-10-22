@@ -21,7 +21,6 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tika.Tika;
 import org.springframework.core.env.Environment;
 import org.springframework.util.DigestUtils;
@@ -32,6 +31,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 @UtilityClass
 @Slf4j
 public class FileUtils {
+
   private final String FILE_ROOT_PATH = "/files/";
   private final String STR_DOT = ".";
   private final String STR_INFO_MESSAGE = "Target for uploading file : {}";
@@ -51,7 +51,7 @@ public class FileUtils {
       org.apache.commons.io.FileUtils.forceDelete(file);
       log.info("file deleted : {}", file.getAbsolutePath());
     } catch (final IOException e) {
-      log.warn(ExceptionUtils.getStackTrace(e));
+      log.warn(LogUtils.getStackTrace(e));
       throw new BusinessException(e);
     }
   }
@@ -96,7 +96,7 @@ public class FileUtils {
       }
       return encodedFilename;
     } catch (final UnsupportedEncodingException e) {
-      log.warn(ExceptionUtils.getStackTrace(e));
+      log.warn(LogUtils.getStackTrace(e));
       throw new BusinessException(e);
     }
   }
@@ -114,7 +114,7 @@ public class FileUtils {
       org.apache.commons.io.FileUtils.forceMkdir(getFile(dirPath));
       return getFile(dirPath);
     } catch (final IOException e) {
-      log.warn(ExceptionUtils.getStackTrace(e));
+      log.warn(LogUtils.getStackTrace(e));
       throw new BusinessException(e);
     }
   }
@@ -126,7 +126,8 @@ public class FileUtils {
     }
     final File file = uploadMultipartFile(targetDirPath, multipartFile);
     log.info(STR_INFO_MESSAGE, file.getAbsolutePath());
-    return StringUtils.remove(file.getAbsolutePath(), getRootPath().getAbsolutePath());
+    return StringUtils.remove(file.getAbsolutePath(), getRootPath().getAbsolutePath())
+        .replaceAll("\\\\", "/");
   }
 
   public List<String> uploadAll(
@@ -161,7 +162,7 @@ public class FileUtils {
     try {
       FileCopyUtils.copy(multipartFile.getBytes(), file);
     } catch (final IOException e) {
-      log.warn(ExceptionUtils.getStackTrace(e));
+      log.warn(LogUtils.getStackTrace(e));
       throw new BusinessException(e);
     }
     return file;
@@ -174,7 +175,7 @@ public class FileUtils {
       throw new BusinessException(ExceptionCode.FAIL_FILE_SIZE);
     }
     if (FileType.ILLEGAL.mimeTypeList.contains(getMimeType(multipartFile))) {
-      log.warn("{}{}", ExceptionCode.FAIL_FILE_MIMETYPE, multipartFile.getOriginalFilename());
+      log.warn("{}{}", ExceptionCode.FAIL_FILE_MIMETYPE, getMimeType(multipartFile));
       throw new BusinessException(ExceptionCode.FAIL_FILE_MIMETYPE);
     }
   }
@@ -186,7 +187,7 @@ public class FileUtils {
       throw new BusinessException(ExceptionCode.FAIL_FILE_SIZE);
     }
     if (FileType.ILLEGAL.mimeTypeList.contains(getMimeType(file))) {
-      log.warn("{}{}", ExceptionCode.FAIL_FILE_MIMETYPE, file.getAbsolutePath());
+      log.warn("{}{}", ExceptionCode.FAIL_FILE_MIMETYPE, getMimeType(file));
       throw new BusinessException(ExceptionCode.FAIL_FILE_MIMETYPE);
     }
   }
@@ -195,15 +196,11 @@ public class FileUtils {
   public void validateFile(final MultipartFile multipartFile, final FileType fileType) {
     try {
       if (!fileType.extList.contains(getExtension(multipartFile))) {
-        log.warn(
-            "{}{}", ExceptionCode.FAIL_FILE_SIZE.toString(), multipartFile.getOriginalFilename());
+        log.warn("{}{}", ExceptionCode.FAIL_FILE_SIZE, multipartFile.getOriginalFilename());
         throw new BusinessException(ExceptionCode.FAIL_FILE_SIZE);
       }
       if (!fileType.mimeTypeList.contains(getMimeType(multipartFile))) {
-        log.warn(
-            "{}{}",
-            ExceptionCode.FAIL_FILE_MIMETYPE.toString(),
-            multipartFile.getOriginalFilename());
+        log.warn("{}{}", ExceptionCode.FAIL_FILE_MIMETYPE, getMimeType(multipartFile));
         throw new BusinessException(ExceptionCode.FAIL_FILE_MIMETYPE);
       }
 
@@ -221,7 +218,7 @@ public class FileUtils {
         throw new BusinessException(ExceptionCode.FAIL_FILE_SIZE);
       }
       if (!fileType.mimeTypeList.contains(getMimeType(file))) {
-        log.warn("{}{}", ExceptionCode.FAIL_FILE_MIMETYPE, file.getAbsolutePath());
+        log.warn("{}{}", ExceptionCode.FAIL_FILE_MIMETYPE, getMimeType(file));
         throw new BusinessException(ExceptionCode.FAIL_FILE_MIMETYPE);
       }
 
@@ -273,7 +270,7 @@ public class FileUtils {
       }
       return TIKA_INSTANCE.detect(multipartFile.getBytes()).toLowerCase();
     } catch (final IOException e) {
-      log.warn(ExceptionUtils.getStackTrace(e));
+      log.warn(LogUtils.getStackTrace(e));
       throw new BusinessException(e);
     }
   }
@@ -285,7 +282,7 @@ public class FileUtils {
       }
       return TIKA_INSTANCE.detect(file).toLowerCase();
     } catch (final IOException e) {
-      log.warn(ExceptionUtils.getStackTrace(e));
+      log.warn(LogUtils.getStackTrace(e));
       throw new BusinessException(e);
     }
   }
@@ -337,7 +334,6 @@ public class FileUtils {
     ILLEGAL(
         Set.of("exe", "sh", "csh", "ai"),
         Set.of(
-            "application/octet-stream",
             "application/x-sh",
             "application/x-shar",
             "text/x-script.sh",

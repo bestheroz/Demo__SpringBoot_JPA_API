@@ -1,4 +1,4 @@
-/.idea/
+.idea
 .gradle
 gradle
 **/build/
@@ -11,3 +11,9 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
+
+hs_err_*.log
+
+out
+!**/sign/out/
+src/main/generated

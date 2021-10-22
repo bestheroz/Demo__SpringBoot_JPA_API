@@ -18,17 +18,16 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   public static final String[] PUBLIC =
       new String[] {
-        "/api/auth/login",
-        "/api/variables/**",
+        "/api/sign-in",
+        "/api/sign-in/**",
+        "/api/sign-out",
+        "/api/auth/refresh-token",
         "/actuator/**",
-        "/api/auth/login",
-        "/api/auth/refreshToken",
-        "/api/auth/initPassword",
         "/swagger-ui.html",
         "/swagger-ui/**",
         "/v3/api-docs",
         "/v3/api-docs/**",
-        "/v1/api/**"
+        "/api/v1/**",
       };
 
   @Override
@@ -58,10 +57,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   public CorsConfigurationSource corsConfigurationSource() {
     final CorsConfiguration configuration = new CorsConfiguration();
 
-    configuration.addAllowedOrigin("http://localhost:8080");
     configuration.addAllowedOrigin("http://localhost:8081");
-    configuration.addAllowedOrigin("http://127.0.0.1:8080");
+    configuration.addAllowedOrigin("http://localhost:8082");
     configuration.addAllowedOrigin("http://127.0.0.1:8081");
+    configuration.addAllowedOrigin("http://127.0.0.1:8082");
+    configuration.addAllowedOrigin("https://sandbox-admin.cubewiz.net/");
+    configuration.addAllowedOrigin("https://qa-admin.cubewiz.net/");
+    configuration.addAllowedOrigin("https://admin.cubewiz.net/");
     configuration.addAllowedHeader("*");
     configuration.addAllowedMethod("*");
     configuration.setAllowCredentials(true);

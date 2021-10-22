@@ -3,16 +3,17 @@ package com.github.bestheroz.standard.common.authenticate;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.bestheroz.standard.common.exception.BusinessException;
+import com.github.bestheroz.standard.common.exception.ExceptionCode;
+import com.github.bestheroz.standard.common.util.LogUtils;
 import com.github.bestheroz.standard.common.util.MapperUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.sql.Date;
 import java.time.OffsetDateTime;
 import javax.servlet.http.HttpServletRequest;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,25 +26,25 @@ public class JwtTokenProvider {
   private final Long expiresAtAccessToken = 300L;
   private final Long expiresAtRefreshToken = 2592000L; // 3600 * 24 * 30 == 1month
 
-  public String createAccessToken(final UserVO userVO) {
-    Assert.notNull(userVO, "userVO parameter must not be empty or null");
-    Assert.hasText(userVO.getUserId(), "userId parameter must not be empty or null");
-    Assert.hasText(userVO.getName(), "userName parameter must not be empty or null");
-    Assert.notNull(userVO.getAuthority(), "authorityId parameter must not be empty or null");
+  public String createAccessToken(final CustomUserDetails customUserDetails) {
+    Assert.notNull(customUserDetails, "customUserDetails parameter must not be empty or null");
+    Assert.hasText(customUserDetails.getAdminId(), "adminId parameter must not be empty or null");
+    Assert.hasText(customUserDetails.getName(), "name parameter must not be empty or null");
+    Assert.notNull(customUserDetails.getRoleId(), "roleId parameter must not be empty or null");
     return JWT.create()
-        .withClaim("userId", userVO.getUserId())
-        .withClaim("userVO", MapperUtils.toString(userVO))
+        .withClaim("id", customUserDetails.getId())
+        .withClaim("admin", MapperUtils.toString(customUserDetails))
         .withExpiresAt(
             Date.from(
                 OffsetDateTime.now().plusSeconds(expiresAtAccessToken.intValue()).toInstant()))
         .sign(ALGORITHM);
   }
 
-  public String createRefreshToken(final UserVO userVO) {
-    Assert.notNull(userVO, "userVO parameter must not be empty or null");
-    Assert.hasText(userVO.getUserId(), "userId parameter must not be empty or null");
+  public String createRefreshToken(final CustomUserDetails customUserDetails) {
+    Assert.notNull(customUserDetails, "customUserDetails parameter must not be empty or null");
+    Assert.hasText(customUserDetails.getAdminId(), "adminId parameter must not be empty or null");
     return JWT.create()
-        .withClaim("userId", userVO.getUserId())
+        .withClaim("id", customUserDetails.getId())
         .withExpiresAt(
             Date.from(
                 OffsetDateTime.now().plusSeconds(expiresAtRefreshToken.intValue()).toInstant()))
@@ -52,14 +53,12 @@ public class JwtTokenProvider {
 
   public Authentication getAuthentication(final String token) {
     Assert.hasText(token, "token parameter must not be empty or null");
-    final UserVO userVO = getUserVO(token);
-    final UserDetails userDetails =
-        new UserVO(userVO.getId(), userVO.getUserId(), userVO.getName(), userVO.getAuthority());
+    final UserDetails userDetails = getCustomUserDetails(token);
     return new UsernamePasswordAuthenticationToken(
         userDetails, StringUtils.EMPTY, userDetails.getAuthorities());
   }
 
-  public String getUserId(final String token) {
+  public Long getId(final String token) {
     Assert.hasText(token, "token parameter must not be empty or null");
     try {
       return JWT.require(ALGORITHM)
@@ -67,14 +66,14 @@ public class JwtTokenProvider {
           .build()
           .verify(token)
           .getClaims()
-          .get("userId")
-          .asString();
+          .get("id")
+          .asLong();
     } catch (final JWTVerificationException | NullPointerException e) {
-      throw BusinessException.FAIL_TRY_LOGIN_FIRST;
+      throw new BusinessException(ExceptionCode.FAIL_TRY_SIGN_IN_FIRST);
     }
   }
 
-  public UserVO getUserVO(final String token) {
+  public CustomUserDetails getCustomUserDetails(final String token) {
     Assert.hasText(token, "token parameter must not be empty or null");
     try {
       return MapperUtils.getObjectMapper()
@@ -84,12 +83,12 @@ public class JwtTokenProvider {
                   .build()
                   .verify(token)
                   .getClaims()
-                  .get("userVO")
+                  .get("admin")
                   .asString(),
-              UserVO.class);
+              CustomUserDetails.class);
     } catch (final JWTVerificationException | NullPointerException | JsonProcessingException e) {
-      log.warn(ExceptionUtils.getStackTrace(e));
-      throw BusinessException.FAIL_TRY_LOGIN_FIRST;
+      log.warn(LogUtils.getStackTrace(e));
+      throw new BusinessException(ExceptionCode.FAIL_TRY_SIGN_IN_FIRST);
     }
   }
 
