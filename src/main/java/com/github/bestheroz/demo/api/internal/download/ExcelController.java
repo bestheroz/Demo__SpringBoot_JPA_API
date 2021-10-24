@@ -5,7 +5,6 @@ import com.github.bestheroz.demo.api.internal.admin.AdminService;
 import com.github.bestheroz.demo.api.internal.code.CodeVO;
 import com.github.bestheroz.demo.repository.AdminRepository;
 import com.github.bestheroz.demo.repository.AppRepository;
-import com.github.bestheroz.demo.repository.CodeRepository;
 import com.github.bestheroz.standard.common.file.excel.ExcelService;
 import com.github.bestheroz.standard.common.file.excel.ExcelVO;
 import com.github.bestheroz.standard.common.filter.DataTableSortRequest;
@@ -33,7 +32,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ExcelController {
   private final AdminRepository adminRepository;
   private final AdminService adminService;
-  private final CodeRepository codeRepository;
   private final AppRepository appRepository;
 
   private final Sort.Direction DEFAULT_SORT = Sort.DEFAULT_DIRECTION;

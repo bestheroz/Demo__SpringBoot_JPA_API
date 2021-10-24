@@ -5,10 +5,6 @@ import java.text.MessageFormat;
 public enum ExceptionCode {
   SUCCESS_NORMAL("S000", "성공"),
 
-  SUCCESS_LOGOUT("S001", "로그아웃 되었습니다."),
-
-  SUCCESS_TRY_NEW_PASSWORD("S002", "비밀번호 초기화"),
-
   ERROR_SYSTEM("E000", "시스템에러"),
 
   ERROR_FILE_NOT_FOUND("E001", "파일이 존재하지 않습니다."),

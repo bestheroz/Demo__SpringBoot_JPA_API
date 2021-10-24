@@ -9,7 +9,6 @@ import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,12 +56,6 @@ public class RoleController {
                   return new RoleSimpleDTO(this.roleRepository.save(item));
                 })
             .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NO_DATA_SUCCESS)));
-  }
-
-  @DeleteMapping(value = "{id}")
-  public ResponseEntity<ApiResult<?>> delete(@PathVariable(value = "id") final Long id) {
-    this.roleRepository.deleteById(id);
-    return Result.ok();
   }
 
   @PostMapping(value = "save-all/")

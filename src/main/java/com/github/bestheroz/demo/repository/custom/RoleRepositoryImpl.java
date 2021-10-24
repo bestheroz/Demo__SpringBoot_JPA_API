@@ -14,9 +14,12 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
   private static final QRole role = QRole.role;
 
   @Override
-  public List<Role> getRolesByIdNot1AndAvailable(final Boolean available) throws BusinessException {
+  public List<Role> getRolesByIdInAndAvailable(final List<Long> ids, final Boolean available)
+      throws BusinessException {
     final BooleanBuilder builder = new BooleanBuilder();
-    builder.and(role.id.ne(1L));
+    if (ids != null) {
+      builder.and(role.id.in(ids));
+    }
 
     if (available != null) {
       builder.and(role.available.eq(available));

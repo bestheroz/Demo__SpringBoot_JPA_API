@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RoleRepositoryCustom {
-  List<Role> getRolesByIdNot1AndAvailable(Boolean available) throws BusinessException;
+  List<Role> getRolesByIdInAndAvailable(final List<Long> ids, final Boolean available)
+      throws BusinessException;
 }

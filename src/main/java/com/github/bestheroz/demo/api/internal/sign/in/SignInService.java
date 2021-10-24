@@ -44,14 +44,13 @@ public class SignInService implements UserDetailsService {
         .findByAdminId(adminId)
         .map(
             admin -> {
-              // 2. 패스워드를 생성한 적이 없으면
-              if (StringUtils.isEmpty(admin.getPassword())) {
-                log.info(ExceptionCode.SUCCESS_TRY_NEW_PASSWORD.toString());
-                throw new BusinessException(ExceptionCode.SUCCESS_TRY_NEW_PASSWORD);
+              // 1. 역할 체크
+              if (!admin.getRole().getAvailable()) {
+                throw new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN);
               }
 
               final Pbkdf2PasswordEncoder pbkdf2PasswordEncoder = new Pbkdf2PasswordEncoder();
-              // 3. 패스워드가 틀리면
+              // 2. 패스워드가 틀리면
               if (!pbkdf2PasswordEncoder.matches(
                   admin.getPassword(), pbkdf2PasswordEncoder.encode(password))) {
                 admin.plusSignInFailCnt();
@@ -59,17 +58,16 @@ public class SignInService implements UserDetailsService {
                 throw new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN);
               }
 
-              // 4. SIGN_IN_FAIL_CNT가 5회 이상 인가
+              // 3. SIGN_IN_FAIL_CNT가 5회 이상 인가
               if (admin.getSignInFailCnt() >= 5) {
                 throw new BusinessException(ExceptionCode.FAIL_SIGN_IN_FAIL_CNT);
               }
 
-              // 5. 계정 차단된 상태인가
+              // 4. 계정 차단된 상태인가
               if (!admin.getAvailable()
                   || admin.getExpired().toEpochMilli() < Instant.now().toEpochMilli()) {
                 throw new BusinessException(ExceptionCode.FAIL_SIGN_IN_CLOSED);
               }
-
               return this.signedSuccess(admin);
             })
         .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN));
