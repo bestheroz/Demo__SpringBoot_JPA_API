@@ -4,7 +4,6 @@ import com.github.bestheroz.demo.api.internal.admin.AdminFilter;
 import com.github.bestheroz.demo.api.internal.admin.AdminService;
 import com.github.bestheroz.demo.api.internal.code.CodeVO;
 import com.github.bestheroz.demo.repository.AdminRepository;
-import com.github.bestheroz.demo.repository.AppRepository;
 import com.github.bestheroz.standard.common.file.excel.ExcelService;
 import com.github.bestheroz.standard.common.file.excel.ExcelVO;
 import com.github.bestheroz.standard.common.filter.DataTableSortRequest;
@@ -32,8 +31,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ExcelController {
   private final AdminRepository adminRepository;
   private final AdminService adminService;
-  private final AppRepository appRepository;
-
   private final Sort.Direction DEFAULT_SORT = Sort.DEFAULT_DIRECTION;
 
   @GetMapping(value = "admins")
@@ -58,27 +55,6 @@ public class ExcelController {
         "Admin_List",
         excelVOList,
         this.adminService.getAdmins(search, dataTableSortRequest, adminFilter).getContent());
-
-    return ExcelService.VIEW_NAME;
-  }
-
-  @GetMapping(value = "apps")
-  public String excelAppApps(final Model model) {
-    final List<ExcelVO> excelVOList = new ArrayList<>();
-
-    // header
-    AbstractExcelXView.addHeader(excelVOList, "앱 이름", "name", ExcelService.CellType.STRING);
-    AbstractExcelXView.addHeader(excelVOList, "앱 타입", "platform", ExcelService.CellType.STRING);
-    AbstractExcelXView.addHeader(
-        excelVOList, "앱 설명", "description", AbstractExcelXView.CellType.STRING);
-    AbstractExcelXView.addHeader(excelVOList, "사용 여부", "available", ExcelService.CellType.STRING);
-
-    // excel maker
-    this.excelMaker(
-        model,
-        "App_List",
-        excelVOList,
-        this.appRepository.findAll(Sort.by(this.DEFAULT_SORT, "created")));
 
     return ExcelService.VIEW_NAME;
   }

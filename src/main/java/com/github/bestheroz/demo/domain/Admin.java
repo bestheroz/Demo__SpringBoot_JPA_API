@@ -45,13 +45,13 @@ public class Admin implements Serializable {
   private Instant expired;
 
   @Column(updatable = false)
-  protected Long createdBy;
+  private Long createdBy;
 
   @Column(updatable = false)
-  protected Instant created;
+  private Instant created;
 
   @PrePersist
-  protected void onCreate() {
+  private void onCreate() {
     this.updated = this.created = Instant.now();
     if (AuthenticationUtils.isSigned()) {
       this.updatedBy = this.createdBy = AuthenticationUtils.getId();
@@ -60,8 +60,8 @@ public class Admin implements Serializable {
     }
   }
 
-  protected Long updatedBy;
-  protected Instant updated;
+  private Long updatedBy;
+  private Instant updated;
 
   public void plusSignInFailCnt() {
     this.signInFailCnt = this.signInFailCnt + 1;
