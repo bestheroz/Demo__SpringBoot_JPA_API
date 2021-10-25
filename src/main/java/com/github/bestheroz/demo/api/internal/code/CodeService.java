@@ -1,10 +1,10 @@
 package com.github.bestheroz.demo.api.internal.code;
 
-import com.github.bestheroz.demo.domain.Code;
 import com.github.bestheroz.demo.repository.CodeRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,8 +12,12 @@ import org.springframework.stereotype.Service;
 public class CodeService {
   private final CodeRepository codeRepository;
 
-  public Iterable<Code> saveAll(final List<CodeDTO> payload) {
-    return this.codeRepository.saveAll(
-        payload.stream().map(CodeDTO::toCode).collect(Collectors.toList()));
+  public List<CodeDTO> saveAll(final List<CodeDTO> payload) {
+    return IterableUtils.toList(
+            this.codeRepository.saveAll(
+                payload.stream().map(CodeDTO::toCode).collect(Collectors.toList())))
+        .stream()
+        .map(CodeDTO::new)
+        .collect(Collectors.toList());
   }
 }

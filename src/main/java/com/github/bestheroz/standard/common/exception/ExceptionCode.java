@@ -13,7 +13,7 @@ public enum ExceptionCode {
 
   FAIL_INVALID_PARAMETER("F001", "올바르지 않은 파라미터"),
 
-  FAIL_NOT_ALLOWED_ADMIN("F002", "허용되지 않는 사용자"),
+  FAIL_NOT_ALLOWED_ADMIN("F002", "허용되지 않는 관리자"),
 
   FAIL_SIGN_IN_CLOSED("F003", "계정 차단"),
 

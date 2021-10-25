@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.IterableUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,9 +68,6 @@ public class CodeController {
   @PostMapping(value = "save-all/")
   public ResponseEntity<ApiResult<List<CodeDTO>>> saveAll(
       @RequestBody @Valid final List<CodeDTO> payload) {
-    return Result.created(
-        IterableUtils.toList(this.codeService.saveAll(payload)).stream()
-            .map(CodeDTO::new)
-            .collect(Collectors.toList()));
+    return Result.created(this.codeService.saveAll(payload));
   }
 }
