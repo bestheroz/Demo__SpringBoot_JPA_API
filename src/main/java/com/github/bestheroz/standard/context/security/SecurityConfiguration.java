@@ -58,12 +58,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     final CorsConfiguration configuration = new CorsConfiguration();
 
     configuration.addAllowedOrigin("http://localhost:8081");
-    configuration.addAllowedOrigin("http://localhost:8082");
     configuration.addAllowedOrigin("http://127.0.0.1:8081");
-    configuration.addAllowedOrigin("http://127.0.0.1:8082");
-    configuration.addAllowedOrigin("https://sandbox-admin.cubewiz.net/");
-    configuration.addAllowedOrigin("https://qa-admin.cubewiz.net/");
-    configuration.addAllowedOrigin("https://admin.cubewiz.net/");
     configuration.addAllowedHeader("*");
     configuration.addAllowedMethod("*");
     configuration.setAllowCredentials(true);
