@@ -18,7 +18,7 @@ ext.tikaVersion = "2.1.0"
 ext.poiVersion = "5.0.0"
 ext.sentryVersion = "5.2.4"
 ext.springdocVersion = "1.5.12"
-ext.hibernateTypesVersion = "2.13.0"
+ext.hibernateTypesVersion = "2.14.0"
 ext.querydslVersion = "4.4.0"
 ext.p6spyVersion = "1.7.1"
 
