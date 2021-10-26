@@ -103,7 +103,7 @@ public class MineController {
     return Result.ok(
         new MineConfigDTO(
             this.adminConfigRepository
-                .findByAdminId(AuthenticationUtils.getId())
+                .findById(AuthenticationUtils.getId())
                 .map(
                     adminConfig -> {
                       adminConfig.change(payload);
@@ -120,7 +120,7 @@ public class MineController {
   public ResponseEntity<ApiResult<MineConfigDTO>> getConfig() {
     return Result.ok(
         this.adminConfigRepository
-            .findByAdminId(AuthenticationUtils.getId())
+            .findById(AuthenticationUtils.getId())
             .map(MineConfigDTO::new)
             .orElseGet(MineConfigDTO::new));
   }
