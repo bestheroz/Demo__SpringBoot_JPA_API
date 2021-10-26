@@ -18,9 +18,6 @@ spring:
     open-in-view: false
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-  messages:
-    basename: i18n/exception
-    encoding: UTF-8
   jackson:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
