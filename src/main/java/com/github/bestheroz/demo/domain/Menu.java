@@ -1,6 +1,6 @@
 package com.github.bestheroz.demo.domain;
 
-import com.github.bestheroz.demo.api.internal.menu.MenuChildrenDTO;
+import com.github.bestheroz.demo.api.internal.menu.MenuSimpleDTO;
 import com.github.bestheroz.demo.type.MenuType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -57,11 +57,11 @@ public class Menu extends AbstractCreatedUpdate implements Serializable {
   private String url;
   private String icon;
 
-  public void changeMenu(final MenuChildrenDTO MenuChildrenDTO) {
-    this.id = MenuChildrenDTO.getId();
-    this.name = MenuChildrenDTO.getName();
-    this.type = MenuChildrenDTO.getType();
-    this.url = MenuChildrenDTO.getUrl();
-    this.icon = MenuChildrenDTO.getIcon();
+  public void changeMenu(final MenuSimpleDTO dto) {
+    this.id = dto.getId();
+    this.name = dto.getName();
+    this.type = dto.getType();
+    this.url = dto.getUrl();
+    this.icon = dto.getIcon();
   }
 }

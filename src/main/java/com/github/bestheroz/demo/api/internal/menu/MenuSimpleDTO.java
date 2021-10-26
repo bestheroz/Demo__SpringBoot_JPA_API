@@ -48,6 +48,17 @@ public class MenuSimpleDTO {
         .build();
   }
 
+  public Menu toMenu(final Integer displayOrder) {
+    return Menu.builder()
+        .id(this.id)
+        .name(this.name)
+        .type(this.type)
+        .url(this.url)
+        .icon(this.icon)
+        .displayOrder(displayOrder)
+        .build();
+  }
+
   public MenuChildrenDTO toMenuChildrenDTO() {
     final MenuChildrenDTO menuChildrenDTO = new MenuChildrenDTO();
     menuChildrenDTO.setId(this.id);

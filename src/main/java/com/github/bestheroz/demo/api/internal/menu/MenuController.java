@@ -58,15 +58,13 @@ public class MenuController {
 
   @PostMapping
   public ResponseEntity<ApiResult<MenuChildrenDTO>> post(
-      @RequestBody @Valid final MenuChildrenDTO payload) {
-    return Result.created(
-        new MenuChildrenDTO(this.menuRepository.save(payload.toMenu(null, 1000))));
+      @RequestBody @Valid final MenuSimpleDTO payload) {
+    return Result.created(new MenuChildrenDTO(this.menuRepository.save(payload.toMenu(1000))));
   }
 
   @PutMapping(value = "{id}")
   public ResponseEntity<ApiResult<MenuChildrenDTO>> put(
-      @PathVariable(value = "id") final Long id,
-      @RequestBody @Valid final MenuChildrenDTO payload) {
+      @PathVariable(value = "id") final Long id, @RequestBody @Valid final MenuSimpleDTO payload) {
     return Result.ok(
         this.menuRepository
             .findById(id)
