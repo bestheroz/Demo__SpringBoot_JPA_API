@@ -6,7 +6,6 @@ import com.github.bestheroz.standard.common.util.NullUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IterableUtils;
@@ -25,7 +24,7 @@ public class RoleMenuService {
     final List<RoleMenuMap> roleMenuMaps =
         this.roleMenuMapRepository
             .findAllByRoleIdAndParentIdNullOrderByDisplayOrderAscAndMenuInnerJoined(roleId);
-    return roleMenuMaps.stream().map(RoleMenuChildrenDTO::new).collect(Collectors.toList());
+    return roleMenuMaps.stream().map(RoleMenuChildrenDTO::new).toList();
   }
 
   public List<RoleMenuChildrenDTO> saveAll(
@@ -35,17 +34,14 @@ public class RoleMenuService {
     } else {
       this.roleMenuMapRepository.deleteByRoleIdAndIdNotInAndParentIdNull(
           roleId,
-          payload.stream()
-              .map(RoleMenuChildrenDTO::getId)
-              .filter(Objects::nonNull)
-              .collect(Collectors.toList()));
+          payload.stream().map(RoleMenuChildrenDTO::getId).filter(Objects::nonNull).toList());
     }
     return IterableUtils.toList(
             this.roleMenuMapRepository.saveAll(
                 this.getRoleMenuMapWithRecursiveChildren(roleId, payload, null)))
         .stream()
         .map(RoleMenuChildrenDTO::new)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   public List<RoleMenuMap> getRoleMenuMapWithRecursiveChildren(

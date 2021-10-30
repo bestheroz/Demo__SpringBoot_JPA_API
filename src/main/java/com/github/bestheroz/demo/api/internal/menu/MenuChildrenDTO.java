@@ -5,7 +5,6 @@ import com.github.bestheroz.demo.type.MenuType;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotEmpty;
@@ -41,8 +40,7 @@ public class MenuChildrenDTO {
     this.url = menu.getUrl();
     this.icon = menu.getIcon();
     if (menu.getType() != null && menu.getType().equals(MenuType.GROUP)) {
-      this.children.addAll(
-          menu.getChildren().stream().map(MenuChildrenDTO::new).collect(Collectors.toList()));
+      this.children.addAll(menu.getChildren().stream().map(MenuChildrenDTO::new).toList());
     }
     this.created = menu.getCreated();
     this.createdBy = menu.getCreatedBy();

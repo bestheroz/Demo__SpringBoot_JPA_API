@@ -12,7 +12,6 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.micrometer.core.instrument.util.StringUtils;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -67,6 +66,6 @@ public class AdminRepositoryImpl implements AdminRepositoryCustom {
   public List<CodeVO<Long>> getCodes() throws BusinessException {
     return this.jpaQueryFactory.select(admin.id, admin.name).from(admin).fetch().stream()
         .map(tuple -> new CodeVO<>(tuple.get(0, Long.class), tuple.get(1, String.class)))
-        .collect(Collectors.<CodeVO<Long>>toList());
+        .toList();
   }
 }

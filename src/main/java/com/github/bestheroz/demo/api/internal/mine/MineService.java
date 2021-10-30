@@ -10,7 +10,6 @@ import com.github.bestheroz.standard.common.exception.BusinessException;
 import com.github.bestheroz.standard.common.exception.ExceptionCode;
 import com.github.bestheroz.standard.common.util.AuthenticationUtils;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,10 +40,7 @@ public class MineService {
     if (AuthenticationUtils.isSuperAdmin()) {
       result
           .getMaps()
-          .addAll(
-              this.menuService.getItems().stream()
-                  .map(RoleMenuChildrenDTO::new)
-                  .collect(Collectors.toList()));
+          .addAll(this.menuService.getItems().stream().map(RoleMenuChildrenDTO::new).toList());
     }
     return result;
   }
@@ -54,11 +50,9 @@ public class MineService {
     if (AuthenticationUtils.isSuperAdmin()) {
       return this.roleRepository.findAllByParentIdNullOrderByDisplayOrderAsc().stream()
           .map(RoleChildrenDTO::new)
-          .collect(Collectors.toList());
+          .toList();
     } else {
-      return this.roleRepository.findAllById(id).stream()
-          .map(RoleChildrenDTO::new)
-          .collect(Collectors.toList());
+      return this.roleRepository.findAllById(id).stream().map(RoleChildrenDTO::new).toList();
     }
   }
 }

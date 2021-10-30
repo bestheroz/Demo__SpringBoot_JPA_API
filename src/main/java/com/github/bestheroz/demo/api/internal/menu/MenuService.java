@@ -6,7 +6,6 @@ import com.github.bestheroz.demo.repository.MenuRepository;
 import com.github.bestheroz.demo.type.MenuType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,7 @@ public class MenuService {
   public List<MenuChildrenDTO> getItems() {
     return this.menuRepository.findAllByParentIdNullOrderByDisplayOrderAsc().stream()
         .map(MenuChildrenDTO::new)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   public void deleteById(final Long id) {
@@ -34,7 +33,7 @@ public class MenuService {
             this.menuRepository.saveAll(this.getMenuWithRecursiveChildren(payload, null)))
         .stream()
         .map(MenuChildrenDTO::new)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   public List<Menu> getMenuWithRecursiveChildren(

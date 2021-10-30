@@ -5,7 +5,6 @@ import com.github.bestheroz.standard.common.util.NullUtils;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -34,8 +33,7 @@ public class RoleChildrenDTO {
     this.name = role.getName();
     this.available = role.getAvailable();
     if (NullUtils.isNotEmpty(role.getChildren())) {
-      this.children.addAll(
-          role.getChildren().stream().map(RoleChildrenDTO::new).collect(Collectors.toList()));
+      this.children.addAll(role.getChildren().stream().map(RoleChildrenDTO::new).toList());
     }
     this.created = role.getCreated();
     this.createdBy = role.getCreatedBy();

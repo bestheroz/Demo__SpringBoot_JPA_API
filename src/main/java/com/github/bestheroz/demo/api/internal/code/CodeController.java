@@ -6,7 +6,6 @@ import com.github.bestheroz.standard.common.exception.ExceptionCode;
 import com.github.bestheroz.standard.common.response.ApiResult;
 import com.github.bestheroz.standard.common.response.Result;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +40,7 @@ public class CodeController {
     return Result.ok(
         this.codeRepository.findAllByTypeOrderByDisplayOrderAsc(type).stream()
             .map(CodeDTO::new)
-            .collect(Collectors.toList()));
+            .toList());
   }
 
   @PostMapping

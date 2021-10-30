@@ -6,7 +6,6 @@ import com.github.bestheroz.standard.common.util.NullUtils;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -39,7 +38,7 @@ public class RoleMapsDTO {
           role.getMaps().stream()
               .filter(m -> m.getParent() == null)
               .map(RoleMenuChildrenDTO::new)
-              .collect(Collectors.toList()));
+              .toList());
     }
     this.created = role.getCreated();
     this.createdBy = role.getCreatedBy();

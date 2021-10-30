@@ -56,7 +56,7 @@ dependencies {
     compileOnly "com.querydsl:querydsl-apt:$querydslVersion:jpa"
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 test {
     exclude '**/*'

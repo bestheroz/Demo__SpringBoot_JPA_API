@@ -5,7 +5,6 @@ import com.github.bestheroz.demo.domain.QCode;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -39,6 +38,6 @@ public class CodeRepositoryImpl implements CodeRepositoryCustom {
         .fetch()
         .stream()
         .map(tuple -> new CodeVO<>(tuple.get(0, String.class), tuple.get(1, String.class)))
-        .collect(Collectors.<CodeVO<String>>toList());
+        .toList();
   }
 }

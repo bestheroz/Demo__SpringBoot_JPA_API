@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
@@ -24,22 +23,19 @@ public class RoleService {
   public List<RoleChildrenDTO> getItems() {
     return this.roleRepository.findAllByParentIdNullOrderByDisplayOrderAsc().stream()
         .map(RoleChildrenDTO::new)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   public List<RoleChildrenDTO> saveAll(final List<RoleChildrenDTO> payload) {
     if (AuthenticationUtils.isSuperAdmin()) {
       this.roleRepository.deleteByIdNotInAndParentIdNull(
-          payload.stream()
-              .map(RoleChildrenDTO::getId)
-              .filter(Objects::nonNull)
-              .collect(Collectors.toList()));
+          payload.stream().map(RoleChildrenDTO::getId).filter(Objects::nonNull).toList());
     }
     return IterableUtils.toList(
             this.roleRepository.saveAll(this.getRoleWithRecursiveChildren(payload, null)))
         .stream()
         .map(RoleChildrenDTO::new)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   private List<Role> getRoleWithRecursiveChildren(
@@ -88,6 +84,6 @@ public class RoleService {
     }
     return this.roleRepository.getRolesByIdInAndAvailable(ids, available).stream()
         .map(RoleSimpleDTO::new)
-        .collect(Collectors.toList());
+        .toList();
   }
 }

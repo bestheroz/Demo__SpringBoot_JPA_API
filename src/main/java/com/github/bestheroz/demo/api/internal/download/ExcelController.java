@@ -10,7 +10,6 @@ import com.github.bestheroz.standard.common.filter.DataTableSortRequest;
 import com.github.bestheroz.standard.context.abstractview.AbstractExcelXView;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -82,7 +81,7 @@ public class ExcelController {
         ExcelService.CellType.STRING,
         this.adminRepository.getCodes().stream()
             .map(c -> new CodeVO<>(c.getValue().toString(), c.getText()))
-            .collect(Collectors.toList()));
+            .toList());
 
     model.addAttribute(AbstractExcelXView.FILE_NAME, fileName);
     model.addAttribute(AbstractExcelXView.EXCEL_VOS, excelVOList);
