@@ -23,15 +23,6 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java-version }}
-
-      - name: Cache Gradle
-        uses: actions/cache@main
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          cache: 'gradle'
 
       - uses: ./.github/actions/build-gradle
