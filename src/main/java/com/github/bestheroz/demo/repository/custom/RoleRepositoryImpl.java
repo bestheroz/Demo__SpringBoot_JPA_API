@@ -6,6 +6,7 @@ import com.github.bestheroz.standard.common.exception.BusinessException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -14,7 +15,7 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
   private static final QRole role = QRole.role;
 
   @Override
-  public List<Role> getRolesByIdInAndAvailable(final List<Long> ids, final Boolean available)
+  public List<Role> getRolesByIdInAndAvailable(final Set<Long> ids, final Boolean available)
       throws BusinessException {
     final BooleanBuilder builder = new BooleanBuilder();
     if (ids != null) {

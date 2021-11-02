@@ -5,8 +5,10 @@ import com.github.bestheroz.demo.repository.RoleRepository;
 import com.github.bestheroz.standard.common.util.AuthenticationUtils;
 import com.github.bestheroz.standard.common.util.NullUtils;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,7 @@ public class RoleService {
 
   public List<RoleChildrenDTO> saveAll(final List<RoleChildrenDTO> payload) {
     if (AuthenticationUtils.isSuperAdmin()) {
-      final List<Long> deleteIds = new ArrayList<>();
+      final Set<Long> deleteIds = new HashSet<>();
       this.setRoleIdsByIdWithDTORecursiveChildren(deleteIds, payload);
       this.roleRepository.deleteByIdNotInAndParentIdNull(deleteIds);
     }
@@ -39,7 +41,7 @@ public class RoleService {
   }
 
   private void setRoleIdsByIdWithDTORecursiveChildren(
-      final List<Long> roleIdList, final List<RoleChildrenDTO> list) {
+      final Set<Long> roleIdList, final List<RoleChildrenDTO> list) {
     list.forEach(
         r -> {
           roleIdList.add(r.getId());
@@ -62,8 +64,8 @@ public class RoleService {
     return result;
   }
 
-  public List<Long> getFlatRoleIdsByIdWithRecursiveChildren(final Long id) {
-    final List<Long> roleIdList = new ArrayList<>();
+  public Set<Long> getFlatRoleIdsByIdWithRecursiveChildren(final Long id) {
+    final Set<Long> roleIdList = new HashSet<>();
     final Optional<Role> roleById = this.roleRepository.findById(id);
     roleById.ifPresent(
         (role) -> {
@@ -74,7 +76,7 @@ public class RoleService {
   }
 
   private void getFlatRoleIdsWithRecursiveChildren(
-      final List<Long> result, final List<Role> children) {
+      final Set<Long> result, final List<Role> children) {
     for (final Role child : children) {
       result.add(child.getId());
       if (!child.getChildren().isEmpty()) {
@@ -85,7 +87,7 @@ public class RoleService {
 
   @Transactional(readOnly = true)
   public List<RoleSimpleDTO> getSelections(final Boolean available) {
-    final List<Long> ids;
+    final Set<Long> ids;
     if (AuthenticationUtils.isSuperAdmin()) {
       ids = null;
     } else {
