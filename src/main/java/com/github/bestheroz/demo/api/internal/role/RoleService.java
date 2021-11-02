@@ -6,7 +6,6 @@ import com.github.bestheroz.standard.common.util.AuthenticationUtils;
 import com.github.bestheroz.standard.common.util.NullUtils;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.IterableUtils;
@@ -28,14 +27,24 @@ public class RoleService {
 
   public List<RoleChildrenDTO> saveAll(final List<RoleChildrenDTO> payload) {
     if (AuthenticationUtils.isSuperAdmin()) {
-      this.roleRepository.deleteByIdNotInAndParentIdNull(
-          payload.stream().map(RoleChildrenDTO::getId).filter(Objects::nonNull).toList());
+      final List<Long> deleteIds = new ArrayList<>();
+      this.setRoleIdsByIdWithDTORecursiveChildren(deleteIds, payload);
+      this.roleRepository.deleteByIdNotInAndParentIdNull(deleteIds);
     }
     return IterableUtils.toList(
             this.roleRepository.saveAll(this.getRoleWithRecursiveChildren(payload, null)))
         .stream()
         .map(RoleChildrenDTO::new)
         .toList();
+  }
+
+  private void setRoleIdsByIdWithDTORecursiveChildren(
+      final List<Long> roleIdList, final List<RoleChildrenDTO> list) {
+    list.forEach(
+        r -> {
+          roleIdList.add(r.getId());
+          this.setRoleIdsByIdWithDTORecursiveChildren(roleIdList, r.getChildren());
+        });
   }
 
   private List<Role> getRoleWithRecursiveChildren(
