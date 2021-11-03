@@ -2,6 +2,7 @@ package com.github.bestheroz.demo.domain;
 
 import com.github.bestheroz.demo.type.RoleAuthorityType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,8 +33,7 @@ import org.hibernate.annotations.TypeDef;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class RoleMenuMap implements Serializable {
-
-  private static final long serialVersionUID = -4753709861734048435L;
+  @Serial private static final long serialVersionUID = -4753709861734048435L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

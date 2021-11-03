@@ -1,6 +1,7 @@
 package com.github.bestheroz.demo.domain;
 
 import com.github.bestheroz.demo.api.internal.role.RoleSimpleDTO;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Role extends AbstractCreatedUpdate implements Serializable {
-  private static final long serialVersionUID = 8475626710152801949L;
+  @Serial private static final long serialVersionUID = 8475626710152801949L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

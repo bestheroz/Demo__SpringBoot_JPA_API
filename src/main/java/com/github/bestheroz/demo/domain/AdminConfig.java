@@ -1,6 +1,7 @@
 package com.github.bestheroz.demo.domain;
 
 import com.github.bestheroz.demo.api.internal.mine.MineConfigDTO;
+import java.io.Serial;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AdminConfig extends AbstractCreatedUpdate implements Serializable {
-  private static final long serialVersionUID = 1426310156205338408L;
+  @Serial private static final long serialVersionUID = 1426310156205338408L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

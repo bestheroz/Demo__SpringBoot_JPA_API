@@ -10,7 +10,7 @@ import org.springframework.data.domain.Sort;
 @UtilityClass
 public class PagingUtils {
   public OrderSpecifier<?>[] getOrderBy(
-      final Sort sort, final Class className, final String entityName) {
+      final Sort sort, final Class<?> className, final String entityName) {
     return sort.stream()
         .map(
             order ->

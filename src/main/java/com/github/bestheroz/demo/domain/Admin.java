@@ -2,6 +2,7 @@ package com.github.bestheroz.demo.domain;
 
 import com.github.bestheroz.demo.api.internal.admin.AdminDTO;
 import com.github.bestheroz.standard.common.util.AuthenticationUtils;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import javax.persistence.Column;
@@ -24,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Admin implements Serializable {
-  private static final long serialVersionUID = 7280716056600887400L;
+  @Serial private static final long serialVersionUID = 7280716056600887400L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

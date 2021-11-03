@@ -2,6 +2,7 @@ package com.github.bestheroz.demo.domain;
 
 import com.github.bestheroz.demo.api.internal.menu.MenuSimpleDTO;
 import com.github.bestheroz.demo.type.MenuType;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Menu extends AbstractCreatedUpdate implements Serializable {
-  private static final long serialVersionUID = 2658557582464222508L;
+  @Serial private static final long serialVersionUID = 2658557582464222508L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
