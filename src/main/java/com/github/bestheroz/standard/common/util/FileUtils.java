@@ -2,6 +2,7 @@ package com.github.bestheroz.standard.common.util;
 
 import com.github.bestheroz.standard.common.exception.BusinessException;
 import com.github.bestheroz.standard.common.exception.ExceptionCode;
+import com.github.bestheroz.standard.context.init.StaticConfig;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -22,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
-import org.springframework.core.env.Environment;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,7 +39,7 @@ public class FileUtils {
   private final Tika TIKA_INSTANCE = new Tika();
 
   private File getRootPath() {
-    if (AccessBeanUtils.getBean(Environment.class).getActiveProfiles()[0].equals("local")) {
+    if (StaticConfig.LOCAL_ACTIVE_PROFILE_FLAG) {
       return org.apache.commons.io.FileUtils.getTempDirectory();
     } else {
       return org.apache.commons.io.FileUtils.getFile(FILE_ROOT_PATH);

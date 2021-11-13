@@ -14,9 +14,7 @@
       <!--      <withJansi>true</withJansi>-->
       <encoder>
         <pattern>
-          <!-- @formatter:off -->
-          %d{HH:mm:ss.SSS} %highlight(%-5level) %magenta([%t]) %-75.75cyan(%c{1}.%M\(%L\)) %m%n
-          <!-- @formatter:on -->
+          <!-- @formatter:off -->%d{HH:mm:ss.SSS} %-5level [%t] %-75.75(%c{1}.%M\(%L\)) %m%n<!-- @formatter:on -->
         </pattern>
       </encoder>
     </appender>
@@ -32,9 +30,7 @@
       </rollingPolicy>
       <encoder>
         <pattern>
-          <!-- @formatter:off -->
-          %d{HH:mm:ss.SSS} %highlight(%-5level) %magenta([%t]) %-75.75cyan(%c{1}.%M\(%L\)) %m%n
-          <!-- @formatter:on -->
+          <!-- @formatter:off -->%d{HH:mm:ss.SSS} %-5level [%t] %-75.75(%c{1}.%M\(%L\)) %m%n<!-- @formatter:on -->
         </pattern>
       </encoder>
     </appender>
@@ -44,9 +40,7 @@
       <withJansi>true</withJansi>
       <encoder>
         <pattern>
-          <!-- @formatter:off -->
-          %d{HH:mm:ss.SSS} %highlight(%-5level) %magenta([%t]) %-75.75cyan(%c{1}.%M\(%L\)) %m%n
-          <!-- @formatter:on -->
+          <!-- @formatter:off -->%d{HH:mm:ss.SSS} %highlight(%-5level) %magenta([%t]) %-75.75cyan(%c{1}.%M\(%L\)) %m%n<!-- @formatter:on -->
         </pattern>
       </encoder>
     </appender>
