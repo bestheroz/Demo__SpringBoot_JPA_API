@@ -59,4 +59,10 @@ public class AdminController {
       @PathVariable(value = "id") final Long id, @RequestBody @Valid final String password) {
     return Result.ok(this.adminService.resetPassword(id, password));
   }
+
+  @GetMapping(value = "exists-admin-id")
+  public ResponseEntity<ApiResult<Boolean>> existsAdminId(
+      @RequestParam(required = false) final String adminId) {
+    return Result.ok(this.adminRepository.existsByAdminId(adminId));
+  }
 }

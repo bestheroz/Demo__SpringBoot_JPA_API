@@ -13,4 +13,6 @@ public interface AdminRepository
   Optional<Admin> findByIdAndToken(Long id, String token);
 
   Optional<Admin> findByAdminId(String adminId);
+
+  boolean existsByAdminId(String adminId);
 }

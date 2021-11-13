@@ -45,6 +45,11 @@ public class AdminService {
         .findById(id)
         .map(
             (item) -> {
+              if (!item.getAdminId().equals(payload.getAdminId())) {
+                if (this.adminRepository.existsByAdminId(payload.getAdminId())) {
+                  throw new BusinessException(ExceptionCode.FAIL_ALREADY_EXISTS_ADMIN_ID);
+                }
+              }
               item.change(payload);
               return new AdminDTO(this.adminRepository.save(item));
             })
