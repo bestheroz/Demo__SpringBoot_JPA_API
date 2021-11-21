@@ -20,6 +20,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       new String[] {
         "/api/sign-in",
         "/api/sign-in/**",
+        "/api/sign-out",
         "/api/auth/refresh-token",
         "/actuator/**",
         "/swagger-ui.html",
