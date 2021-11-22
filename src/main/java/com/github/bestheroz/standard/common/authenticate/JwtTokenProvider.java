@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.bestheroz.standard.common.exception.BusinessException;
 import com.github.bestheroz.standard.common.exception.ExceptionCode;
 import com.github.bestheroz.standard.common.util.LogUtils;
@@ -90,7 +89,7 @@ public class JwtTokenProvider {
           claims.get("adminId").asString(),
           claims.get("name").asString(),
           claims.get("roleId").asLong());
-    } catch (final JWTVerificationException | NullPointerException | JsonProcessingException e) {
+    } catch (final JWTVerificationException | NullPointerException e) {
       log.warn(LogUtils.getStackTrace(e));
       throw new BusinessException(ExceptionCode.FAIL_TRY_SIGN_IN_FIRST);
     }

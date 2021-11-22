@@ -1,8 +1,8 @@
 plugins {
-    id "org.springframework.boot" version "2.5.6"
+    id "org.springframework.boot" version "2.5.7"
     id "java"
     id "idea"
-    id "com.diffplug.spotless" version "5.17.0"
+    id "com.diffplug.spotless" version "6.0.0"
     id "com.github.ben-manes.versions" version "0.39.0"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
@@ -15,8 +15,8 @@ repositories {
 ext.javaJwtVersion = "3.18.2"
 ext.comonsIoVersion = "2.11.0"
 ext.tikaVersion = "2.1.0"
-ext.poiVersion = "5.0.0"
-ext.sentryVersion = "5.2.4"
+ext.poiVersion = "5.1.0"
+ext.sentryVersion = "5.4.1"
 ext.springdocVersion = "1.5.12"
 ext.hibernateTypesVersion = "2.14.0"
 ext.querydslVersion = "4.4.0"
