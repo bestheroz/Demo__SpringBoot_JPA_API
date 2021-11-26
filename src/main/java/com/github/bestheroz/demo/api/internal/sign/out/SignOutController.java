@@ -1,9 +1,12 @@
 package com.github.bestheroz.demo.api.internal.sign.out;
 
 import com.github.bestheroz.standard.common.authenticate.JwtTokenProvider;
+import com.github.bestheroz.standard.common.response.ApiResult;
+import com.github.bestheroz.standard.common.response.Result;
 import com.github.bestheroz.standard.common.util.AuthenticationUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,21 +21,22 @@ public class SignOutController {
   private final SignOutService signOutService;
 
   @DeleteMapping
-  public void signOut(
+  public ResponseEntity<ApiResult<?>> signOut(
       @RequestHeader(value = "Authorization", required = false) final String accessToken) {
     if (StringUtils.isEmpty(accessToken)) {
-      return;
+      return Result.ok();
     }
     try {
       SecurityContextHolder.getContext()
           .setAuthentication(JwtTokenProvider.getAuthentication(accessToken));
+      if (AuthenticationUtils.isNotSigned()) {
+        return Result.ok();
+      }
     } catch (final UsernameNotFoundException e) {
-      return;
-    }
-    if (AuthenticationUtils.isNotSigned()) {
-      return;
+      return Result.ok();
     }
     this.signOutService.signOut();
     AuthenticationUtils.signOut();
+    return Result.ok();
   }
 }
