@@ -5,7 +5,6 @@ import com.github.bestheroz.demo.domain.Role;
 import com.github.bestheroz.standard.common.authenticate.CustomUserDetails;
 import com.github.bestheroz.standard.common.exception.BusinessException;
 import com.github.bestheroz.standard.common.exception.ExceptionCode;
-import java.util.Optional;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -61,7 +60,7 @@ public class AuthenticationUtils {
 
   public Long getRoleId() {
     try {
-      return AuthenticationUtils.getCustomUserDetails().getRoleId();
+      return getCustomUserDetails().getRoleId();
     } catch (final NullPointerException e) {
       throw new BusinessException(ExceptionCode.FAIL_TRY_SIGN_IN_FIRST);
     } catch (final Throwable e) {
