@@ -112,8 +112,7 @@ public class MineController {
                 .orElseGet(
                     () ->
                         this.adminConfigRepository.save(
-                            payload.toAdminConfig(
-                                Admin.builder().id(AuthenticationUtils.getId()).build())))));
+                            payload.toAdminConfig(AuthenticationUtils.getAdmin())))));
   }
 
   @GetMapping(value = "config")
