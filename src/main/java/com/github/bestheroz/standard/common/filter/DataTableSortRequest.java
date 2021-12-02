@@ -15,7 +15,7 @@ public class DataTableSortRequest {
   private int page;
   private List<String> sortBy;
   private List<Boolean> sortDesc;
-  private short itemsPerPage;
+  private int itemsPerPage;
 
   private Sort getSort() {
     final List<Order> orders = new ArrayList<>();
