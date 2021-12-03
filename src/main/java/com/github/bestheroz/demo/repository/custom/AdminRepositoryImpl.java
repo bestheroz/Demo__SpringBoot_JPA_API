@@ -38,7 +38,7 @@ public class AdminRepositoryImpl implements AdminRepositoryCustom {
 
     // 검색조건 (사용자ID , 사용자명)
     if (StringUtils.isNotEmpty(search)) {
-      builder.and(admin.adminId.contains(search).or(admin.name.contains(search)));
+      builder.and(admin.loginId.contains(search).or(admin.name.contains(search)));
     }
 
     // 필터조건 (권한)

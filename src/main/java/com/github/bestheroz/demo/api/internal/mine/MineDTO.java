@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MineDTO {
   private Long id;
-  private String adminId;
+  private String loginId;
   private String name;
   private RoleSimpleDTO role;
   private Instant created;
@@ -20,7 +20,7 @@ public class MineDTO {
   public MineDTO(final Admin admin) {
     this.id = admin.getId();
     this.name = admin.getName();
-    this.adminId = admin.getAdminId();
+    this.loginId = admin.getLoginId();
     this.role = new RoleSimpleDTO(admin.getRole());
     this.created = admin.getCreated();
     this.updated = admin.getUpdated();

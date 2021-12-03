@@ -32,7 +32,7 @@ public class Admin implements Serializable {
   private Long id;
 
   @Column(unique = true)
-  private String adminId;
+  private String loginId;
 
   private String password;
   private String name;

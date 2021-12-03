@@ -28,20 +28,20 @@ public class SignInService implements UserDetailsService {
   private final AdminRepository adminRepository;
 
   @Override
-  public UserDetails loadUserByUsername(final String adminId) throws UsernameNotFoundException {
-    if (StringUtils.isEmpty(adminId)) {
+  public UserDetails loadUserByUsername(final String loginId) throws UsernameNotFoundException {
+    if (StringUtils.isEmpty(loginId)) {
       throw new UsernameNotFoundException("No user found");
     }
     return this.adminRepository
-        .findByAdminId(adminId)
+        .findByLoginId(loginId)
         .map(CustomUserDetails::new)
-        .orElseThrow(() -> new UsernameNotFoundException("No user found by `" + adminId + "`"));
+        .orElseThrow(() -> new UsernameNotFoundException("No user found by `" + loginId + "`"));
   }
 
   @Transactional(propagation = Propagation.NEVER)
-  public Map<String, String> signIn(final String adminId, final String password) {
+  public Map<String, String> signIn(final String loginId, final String password) {
     return this.adminRepository
-        .findByAdminId(adminId)
+        .findByLoginId(loginId)
         .map(
             admin -> {
               // 1. 역할 체크

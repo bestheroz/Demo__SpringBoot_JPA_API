@@ -45,9 +45,9 @@ public class AdminService {
         .findById(id)
         .map(
             (item) -> {
-              if (!item.getAdminId().equals(payload.getAdminId())) {
-                if (this.adminRepository.existsByAdminId(payload.getAdminId())) {
-                  throw new BusinessException(ExceptionCode.FAIL_ALREADY_EXISTS_ADMIN_ID);
+              if (!item.getLoginId().equals(payload.getLoginId())) {
+                if (this.adminRepository.existsByLoginId(payload.getLoginId())) {
+                  throw new BusinessException(ExceptionCode.FAIL_ALREADY_EXISTS_LOGIN_ID);
                 }
               }
               item.change(payload);

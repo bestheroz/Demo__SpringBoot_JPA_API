@@ -55,7 +55,7 @@ public enum ExceptionCode {
 
   FAIL_MATCH_PASSWORD("F022", "비밀번호가 올바르지 않습니다."),
 
-  FAIL_ALREADY_EXISTS_ADMIN_ID("F023", "이미 존재하는 Admin ID 입니다.");
+  FAIL_ALREADY_EXISTS_LOGIN_ID("F023", "이미 존재하는 Admin ID 입니다.");
 
   private final String code;
   private final String message;

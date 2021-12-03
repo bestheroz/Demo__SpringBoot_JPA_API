@@ -60,9 +60,9 @@ public class AdminController {
     return Result.ok(this.adminService.resetPassword(id, password));
   }
 
-  @GetMapping(value = "exists-admin-id")
-  public ResponseEntity<ApiResult<Boolean>> existsAdminId(
-      @RequestParam(required = false) final String adminId) {
-    return Result.ok(this.adminRepository.existsByAdminId(adminId));
+  @GetMapping(value = "exists-login-id")
+  public ResponseEntity<ApiResult<Boolean>> existsLoginId(
+      @RequestParam(required = false) final String loginId) {
+    return Result.ok(this.adminRepository.existsByLoginId(loginId));
   }
 }
