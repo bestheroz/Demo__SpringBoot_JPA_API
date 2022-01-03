@@ -1,9 +1,9 @@
 plugins {
-    id "org.springframework.boot" version "2.5.7"
+    id "org.springframework.boot" version "2.5.8"
     id "java"
     id "idea"
-    id "com.diffplug.spotless" version "6.0.1"
-    id "com.github.ben-manes.versions" version "0.39.0"
+    id "com.diffplug.spotless" version "6.1.0"
+    id "com.github.ben-manes.versions" version "0.40.0"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
@@ -14,13 +14,12 @@ repositories {
 
 ext.javaJwtVersion = "3.18.2"
 ext.comonsIoVersion = "2.11.0"
-ext.tikaVersion = "2.1.0"
+ext.tikaVersion = "2.2.1"
 ext.poiVersion = "5.1.0"
-ext.sentryVersion = "5.4.2"
-ext.springdocVersion = "1.5.13"
+ext.sentryVersion = "5.5.1"
+ext.springdocVersion = "1.6.3"
 ext.hibernateTypesVersion = "2.14.0"
-ext.querydslVersion = "4.4.0"
-ext.p6spyVersion = "1.7.1"
+ext.p6spyVersion = "1.8.0"
 
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
@@ -33,7 +32,6 @@ dependencies {
     implementation "org.apache.commons:commons-lang3"
     implementation "com.querydsl:querydsl-jpa"
     implementation "com.h2database:h2"
-//    implementation "org.mariadb.jdbc:mariadb-java-client"
     implementation "com.github.gavlyukovskiy:p6spy-spring-boot-starter:$p6spyVersion"
     implementation "com.auth0:java-jwt:$javaJwtVersion"
     implementation "commons-io:commons-io:$comonsIoVersion"
@@ -51,8 +49,8 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     annotationProcessor "javax.annotation:javax.annotation-api"
-    annotationProcessor "com.querydsl:querydsl-apt:$querydslVersion:jpa"
-    compileOnly "com.querydsl:querydsl-apt:$querydslVersion:jpa"
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
+    compileOnly "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_17
