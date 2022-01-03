@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity(name = "admin_config")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class AdminConfig extends AbstractCreatedUpdate implements Serializable {
+public class AdminConfig extends BaseAuditEntity implements Serializable {
   @Serial private static final long serialVersionUID = 1426310156205338408L;
 
   @Id

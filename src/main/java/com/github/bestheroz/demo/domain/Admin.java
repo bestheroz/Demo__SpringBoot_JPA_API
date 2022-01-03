@@ -12,12 +12,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 
 @Getter
 @Builder
@@ -45,24 +46,16 @@ public class Admin implements Serializable {
   private String token;
   private Instant expired;
 
+  @CreatedBy
   @Column(updatable = false)
-  private Long createdBy;
+  protected Long createdBy;
 
+  @CreatedDate
   @Column(updatable = false)
-  private Instant created;
+  protected Instant created;
 
-  @PrePersist
-  private void onCreate() {
-    this.updated = this.created = Instant.now();
-    if (AuthenticationUtils.isSigned()) {
-      this.updatedBy = this.createdBy = AuthenticationUtils.getId();
-    } else {
-      this.updatedBy = this.createdBy = 0L;
-    }
-  }
-
-  private Long updatedBy;
-  private Instant updated;
+  protected Long updatedBy;
+  protected Instant updated;
 
   public void plusSignInFailCnt() {
     this.signInFailCnt = this.signInFailCnt + 1;

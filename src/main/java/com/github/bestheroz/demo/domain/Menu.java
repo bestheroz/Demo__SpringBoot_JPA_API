@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 @Entity(name = "menu")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Menu extends AbstractCreatedUpdate implements Serializable {
+public class Menu extends BaseAuditEntity implements Serializable {
   @Serial private static final long serialVersionUID = 2658557582464222508L;
 
   @Id

@@ -32,7 +32,7 @@ import org.hibernate.annotations.TypeDef;
 @TypeDef(name = "jsonString", typeClass = JsonStringType.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class RoleMenuMap implements Serializable {
+public class RoleMenuMap extends BaseAuditEntity implements Serializable {
   @Serial private static final long serialVersionUID = -4753709861734048435L;
 
   @Id

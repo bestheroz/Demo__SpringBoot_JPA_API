@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Entity(name = "role")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Role extends AbstractCreatedUpdate implements Serializable {
+public class Role extends BaseAuditEntity implements Serializable {
   @Serial private static final long serialVersionUID = 8475626710152801949L;
 
   @Id
