@@ -27,7 +27,7 @@ public class AdminConfig extends BaseAuditEntity implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @OneToOne(fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
+  @OneToOne(fetch = FetchType.LAZY, optional = false)
   private Admin admin;
 
   private String globalTheme;
@@ -37,12 +37,13 @@ public class AdminConfig extends BaseAuditEntity implements Serializable {
   private Boolean contentBoxed;
   private String primaryColor;
 
-  public void change(final MineConfigDTO dto) {
+  public AdminConfig change(final MineConfigDTO dto) {
     this.globalTheme = dto.getGlobalTheme();
     this.toolbarTheme = dto.getToolbarTheme();
     this.menuTheme = dto.getMenuTheme();
     this.toolbarDetached = dto.getToolbarDetached();
     this.contentBoxed = dto.getContentBoxed();
     this.primaryColor = dto.getPrimaryColor();
+    return this;
   }
 }

@@ -1,8 +1,6 @@
 package com.github.bestheroz.demo.api.internal.code;
 
 import com.github.bestheroz.demo.repository.CodeRepository;
-import com.github.bestheroz.standard.common.exception.BusinessException;
-import com.github.bestheroz.standard.common.exception.ExceptionCode;
 import com.github.bestheroz.standard.common.response.ApiResult;
 import com.github.bestheroz.standard.common.response.Result;
 import java.util.List;
@@ -37,25 +35,18 @@ public class CodeController {
   @GetMapping
   ResponseEntity<ApiResult<List<CodeDTO>>> getItems(
       @RequestParam(value = "type") final String type) {
-    return Result.ok(
-        this.codeRepository.findAllByTypeOrderByDisplayOrderAsc(type).stream()
-            .map(CodeDTO::new)
-            .toList());
+    return Result.ok(this.codeService.getItems(type));
   }
 
   @PostMapping
   public ResponseEntity<ApiResult<CodeDTO>> post(@RequestBody @Valid final CodeDTO payload) {
-    return Result.created(new CodeDTO(this.codeRepository.save(payload.toCode())));
+    return Result.created(this.codeService.persist(payload));
   }
 
   @PutMapping(value = "{id}")
   public ResponseEntity<ApiResult<CodeDTO>> put(
       @PathVariable(value = "id") final Long id, @RequestBody @Valid final CodeDTO payload) {
-    return Result.ok(
-        this.codeRepository
-            .findById(id)
-            .map((item) -> new CodeDTO(this.codeRepository.save(payload.toCode())))
-            .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NO_DATA_SUCCESS)));
+    return Result.ok(this.codeService.change(id, payload));
   }
 
   @DeleteMapping(value = "{id}")

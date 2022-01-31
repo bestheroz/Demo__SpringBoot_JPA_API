@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,10 +20,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Builder
 @Entity(name = "admin")
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Admin implements Serializable {
@@ -54,8 +57,9 @@ public class Admin implements Serializable {
   @Column(updatable = false)
   protected Instant created;
 
-  protected Long updatedBy;
-  protected Instant updated;
+  @CreatedBy protected Long updatedBy;
+
+  @CreatedDate protected Instant updated;
 
   public void plusSignInFailCnt() {
     this.signInFailCnt = this.signInFailCnt + 1;
@@ -74,25 +78,33 @@ public class Admin implements Serializable {
     this.token = null;
   }
 
-  public void setPassword(final String password) {
+  public Admin setPassword(final String password) {
     this.password = password;
     this.updated = Instant.now();
     this.updatedBy = AuthenticationUtils.getId();
     this.resetSignInFailCnt();
+    return this;
   }
 
-  public void setName(final String name) {
+  public Admin setName(final String name) {
     this.name = name;
     this.updated = Instant.now();
     this.updatedBy = AuthenticationUtils.getId();
+    return this;
   }
 
-  public void change(final AdminDTO dto) {
+  public Admin change(final AdminDTO dto) {
+    this.loginId = dto.getLoginId();
     this.name = dto.getName();
     this.role = dto.getRole().toRole();
     this.available = dto.getAvailable();
     this.expired = dto.getExpired();
     this.updated = Instant.now();
     this.updatedBy = AuthenticationUtils.getId();
+    return this;
+  }
+
+  public void setToken(final String token) {
+    this.token = token;
   }
 }

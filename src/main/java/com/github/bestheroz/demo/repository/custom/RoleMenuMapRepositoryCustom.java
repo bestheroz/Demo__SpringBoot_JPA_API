@@ -1,9 +1,9 @@
 package com.github.bestheroz.demo.repository.custom;
 
 import com.github.bestheroz.demo.domain.RoleMenuMap;
-import java.util.List;
+import java.util.stream.Stream;
 
 public interface RoleMenuMapRepositoryCustom {
-  List<RoleMenuMap> findAllByRoleIdAndParentIdNullOrderByDisplayOrderAscAndMenuInnerJoined(
+  Stream<RoleMenuMap> findAllByRoleIdAndParentIdNullOrderByDisplayOrderAscAndMenuInnerJoined(
       Long roleId);
 }

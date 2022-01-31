@@ -6,7 +6,6 @@ import com.github.bestheroz.demo.api.internal.role.RoleChildrenDTO;
 import com.github.bestheroz.demo.api.internal.role.RoleMapsDTO;
 import com.github.bestheroz.demo.api.internal.role.RoleSimpleDTO;
 import com.github.bestheroz.demo.api.internal.role.menu.RoleMenuService;
-import com.github.bestheroz.demo.domain.Admin;
 import com.github.bestheroz.demo.repository.AdminConfigRepository;
 import com.github.bestheroz.demo.repository.AdminRepository;
 import com.github.bestheroz.standard.common.exception.BusinessException;
@@ -18,14 +17,9 @@ import com.github.bestheroz.standard.common.util.NullUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,76 +44,29 @@ public class MineController {
   }
 
   @PatchMapping()
-  public ResponseEntity<ApiResult<EditMeDTO>> editMe(@RequestBody @Valid final EditMeDTO payload) {
-    return this.adminRepository
-        .findById(AuthenticationUtils.getId())
-        .map(
-            admin -> {
-              this.verifyPassword(admin.getPassword(), payload.getPassword());
-              admin.setName(payload.getName());
-              return Result.ok(new EditMeDTO(this.adminRepository.save(admin)));
-            })
-        .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN));
-  }
-
-  @Data
-  @NoArgsConstructor(access = AccessLevel.PRIVATE)
-  static class EditMeDTO {
-    private Long id;
-    private String name;
-    private String password;
-
-    public EditMeDTO(final Admin admin) {
-      this.id = admin.getId();
-      this.name = admin.getName();
-    }
+  public ResponseEntity<ApiResult<EditMeDTO>> updateMe(
+      @RequestBody @Valid final EditMeDTO payload) {
+    return Result.ok(this.mineService.updateMe(payload));
   }
 
   @PatchMapping(value = "password")
   public ResponseEntity<ApiResult<?>> changePassword(
       @RequestBody @Valid final ChangePasswordDTO payload) {
-    return this.adminRepository
-        .findById(AuthenticationUtils.getId())
-        .map(
-            admin -> {
-              this.verifyPassword(admin.getPassword(), payload.getOldPassword());
-              admin.setPassword(payload.getNewPassword());
-              this.adminRepository.save(admin);
-              return Result.ok();
-            })
-        .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN));
-  }
-
-  @Data
-  @NoArgsConstructor(access = AccessLevel.PRIVATE)
-  static class ChangePasswordDTO {
-    @NotEmpty private String oldPassword;
-    @NotEmpty private String newPassword;
+    this.mineService.changePassword(payload);
+    return Result.ok();
   }
 
   @PostMapping(value = "config")
   public ResponseEntity<ApiResult<MineConfigDTO>> changeConfig(
       @RequestBody @Valid final MineConfigDTO payload) {
-    return Result.ok(
-        new MineConfigDTO(
-            this.adminConfigRepository
-                .findById(AuthenticationUtils.getId())
-                .map(
-                    adminConfig -> {
-                      adminConfig.change(payload);
-                      return this.adminConfigRepository.save(adminConfig);
-                    })
-                .orElseGet(
-                    () ->
-                        this.adminConfigRepository.save(
-                            payload.toAdminConfig(AuthenticationUtils.getAdmin())))));
+    return Result.ok(this.mineService.changeConfig(payload));
   }
 
   @GetMapping(value = "config")
   public ResponseEntity<ApiResult<MineConfigDTO>> getConfig() {
     return Result.ok(
         this.adminConfigRepository
-            .findById(AuthenticationUtils.getId())
+            .findByAdminId(AuthenticationUtils.getId())
             .map(MineConfigDTO::new)
             .orElseGet(MineConfigDTO::new));
   }
@@ -159,20 +106,10 @@ public class MineController {
         .findById(AuthenticationUtils.getId())
         .map(
             admin -> {
-              this.verifyPassword(admin.getPassword(), password);
+              this.mineService.verifyPassword(admin.getPassword(), password);
               return Result.ok();
             })
         .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN));
-  }
-
-  // 패스워드 검증 공통 함수
-  private void verifyPassword(final String adminPassword, final String payload) {
-    final Pbkdf2PasswordEncoder pbkdf2PasswordEncoder = new Pbkdf2PasswordEncoder();
-
-    // 패스워드가 틀리면
-    if (!pbkdf2PasswordEncoder.matches(adminPassword, pbkdf2PasswordEncoder.encode(payload))) {
-      throw new BusinessException(ExceptionCode.FAIL_MATCH_PASSWORD);
-    }
   }
 
   @GetMapping("menus/")
@@ -181,7 +118,7 @@ public class MineController {
       return Result.ok(this.menuService.getItems());
     } else {
       return Result.ok(
-          MenuService.getMenuChildrenDTOWithRecursiveChildren(
+          this.menuService.getMenuChildrenDTOWithRecursiveChildren(
               this.roleMenuService.getItems(AuthenticationUtils.getRoleId())));
     }
   }

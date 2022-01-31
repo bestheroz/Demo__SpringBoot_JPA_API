@@ -1,6 +1,10 @@
 package com.github.bestheroz.demo.domain;
 
+import com.github.bestheroz.demo.api.internal.role.menu.RoleMenuChildrenDTO;
+import com.github.bestheroz.demo.helper.recursive.RecursiveEntity;
+import com.github.bestheroz.demo.helper.recursive.RecursiveEntityChildrenHelper;
 import com.github.bestheroz.demo.type.RoleAuthorityType;
+import com.github.bestheroz.standard.common.util.NullUtils;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import java.io.Serial;
 import java.io.Serializable;
@@ -32,7 +36,8 @@ import org.hibernate.annotations.TypeDef;
 @TypeDef(name = "jsonString", typeClass = JsonStringType.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class RoleMenuMap extends BaseAuditEntity implements Serializable {
+public class RoleMenuMap extends RecursiveEntity<RoleMenuMap, RoleMenuChildrenDTO>
+    implements Serializable {
   @Serial private static final long serialVersionUID = -4753709861734048435L;
 
   @Id
@@ -56,7 +61,7 @@ public class RoleMenuMap extends BaseAuditEntity implements Serializable {
   @JoinColumn(nullable = false)
   private Role role;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(nullable = false)
   private Menu menu;
 
@@ -65,4 +70,27 @@ public class RoleMenuMap extends BaseAuditEntity implements Serializable {
   @Type(type = "jsonString")
   @Builder.Default
   private final Set<RoleAuthorityType> authoritiesJson = new HashSet<>();
+
+  @Override
+  public RoleMenuMap change(final RoleMenuChildrenDTO dto, final RoleMenuMap parent) {
+    this.menu = dto.getMenu().toMenu();
+    this.authoritiesJson.clear();
+    this.parent = parent;
+    if (NullUtils.isNotEmpty(dto.getAuthoritiesJson())) {
+      this.authoritiesJson.addAll(dto.getAuthoritiesJson());
+    }
+
+    final List<RoleMenuChildrenDTO> childrenDTOs = dto.getChildren();
+    final RecursiveEntityChildrenHelper<RoleMenuMap, RoleMenuChildrenDTO> helper =
+        new RecursiveEntityChildrenHelper<>();
+    helper.deleteAndGetRemains(this.children, childrenDTOs);
+    helper.saveAll(this.children, childrenDTOs, this, this.role.getId());
+    return this;
+  }
+
+  @Override
+  public RoleMenuMap setDisplayOrder(final Integer displayOrder) {
+    this.displayOrder = displayOrder;
+    return this;
+  }
 }

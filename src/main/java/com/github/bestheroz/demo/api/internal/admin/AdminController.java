@@ -29,8 +29,8 @@ public class AdminController {
   private final AdminService adminService;
 
   @GetMapping(value = "codes/")
-  public ResponseEntity<ApiResult<List<CodeVO<Long>>>> getCodes() {
-    return Result.ok(this.adminRepository.getCodes());
+  public ResponseEntity<ApiResult<List<CodeVO<Long>>>> getCodeVOs() {
+    return Result.ok(this.adminRepository.getCodeVOs());
   }
 
   @GetMapping
@@ -45,7 +45,7 @@ public class AdminController {
   @PostMapping
   public ResponseEntity<ApiResult<AdminDTO>> post(
       @RequestBody @Valid final AdminPasswordDTO payload) {
-    return Result.created(new AdminDTO(this.adminRepository.save(payload.toAdmin())));
+    return Result.created(this.adminService.persist(payload));
   }
 
   @PatchMapping(value = "{id}")

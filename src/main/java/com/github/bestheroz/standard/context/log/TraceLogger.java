@@ -54,7 +54,9 @@ public class TraceLogger {
                 1000));
       }
     } catch (final Throwable e) {
-      stopWatch.stop();
+      if (stopWatch.isStarted()) {
+        stopWatch.stop();
+      }
       log.info(STR_END_EXECUTE_TIME_FOR_EXCEPTION, signature, stopWatch.getTime());
       throw e;
     }

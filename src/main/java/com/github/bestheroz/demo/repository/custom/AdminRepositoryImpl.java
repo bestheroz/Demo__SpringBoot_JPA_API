@@ -1,5 +1,6 @@
 package com.github.bestheroz.demo.repository.custom;
 
+import com.github.bestheroz.demo.api.internal.admin.AdminDTO;
 import com.github.bestheroz.demo.api.internal.code.CodeVO;
 import com.github.bestheroz.demo.domain.Admin;
 import com.github.bestheroz.demo.domain.QAdmin;
@@ -8,7 +9,6 @@ import com.github.bestheroz.standard.common.util.AuthenticationUtils;
 import com.github.bestheroz.standard.common.util.NullUtils;
 import com.github.bestheroz.standard.common.util.PagingUtils;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.micrometer.core.instrument.util.StringUtils;
 import java.util.List;
@@ -16,14 +16,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AdminRepositoryImpl implements AdminRepositoryCustom {
   private final JPAQueryFactory jpaQueryFactory;
   private static final QAdmin admin = QAdmin.admin;
 
   @Override
-  public Page<Admin> findAllBySearch(
+  public Page<AdminDTO> getAllByPaginationAndSearch(
       final String search,
       final List<Boolean> availableList,
       final List<Long> roleIdList,
@@ -51,20 +53,25 @@ public class AdminRepositoryImpl implements AdminRepositoryCustom {
       builder.and(admin.available.in(availableList));
     }
 
-    final QueryResults<Admin> result =
+    return new PageImpl<>(
         this.jpaQueryFactory
             .selectFrom(admin)
+            .innerJoin(admin.role)
+            .fetchJoin()
             .where(builder)
             .orderBy(PagingUtils.getOrderBy(pageable.getSort(), Admin.class, "admin"))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
-            .fetchResults();
-    return new PageImpl<>(result.getResults(), pageable, result.getTotal());
+            .stream()
+            .map(AdminDTO::new)
+            .toList(),
+        pageable,
+        this.jpaQueryFactory.select(admin.id).from(admin).where(builder).stream().count());
   }
 
   @Override
-  public List<CodeVO<Long>> getCodes() throws BusinessException {
-    return this.jpaQueryFactory.select(admin.id, admin.name).from(admin).fetch().stream()
+  public List<CodeVO<Long>> getCodeVOs() throws BusinessException {
+    return this.jpaQueryFactory.select(admin.id, admin.name).from(admin).stream()
         .map(tuple -> new CodeVO<>(tuple.get(0, Long.class), tuple.get(1, String.class)))
         .toList();
   }

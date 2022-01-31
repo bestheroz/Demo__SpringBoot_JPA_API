@@ -1,8 +1,5 @@
 package com.github.bestheroz.demo.api.internal.role;
 
-import com.github.bestheroz.demo.repository.RoleRepository;
-import com.github.bestheroz.standard.common.exception.BusinessException;
-import com.github.bestheroz.standard.common.exception.ExceptionCode;
 import com.github.bestheroz.standard.common.response.ApiResult;
 import com.github.bestheroz.standard.common.response.Result;
 import java.util.List;
@@ -23,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class RoleController {
   private final RoleService roleService;
-  private final RoleRepository roleRepository;
 
   @GetMapping(value = "selections/")
   public ResponseEntity<ApiResult<List<RoleSimpleDTO>>> getSelections(
@@ -33,29 +29,21 @@ public class RoleController {
 
   @GetMapping
   ResponseEntity<ApiResult<List<RoleChildrenDTO>>> getItems() {
-    return Result.ok(this.roleService.getItems());
+    return Result.ok(
+        this.roleService.getItems().stream().filter(v -> !v.getId().equals(1L)).toList());
   }
 
   @PostMapping()
   public ResponseEntity<ApiResult<RoleChildrenDTO>> post(
       @RequestParam(required = false) final Long parentId,
       @RequestBody @Valid final RoleSimpleDTO payload) {
-    return Result.created(
-        new RoleChildrenDTO(this.roleRepository.save(payload.toRole(parentId, 1000, List.of()))));
+    return Result.created(this.roleService.persist(parentId, payload));
   }
 
   @PutMapping(value = "{id}")
   public ResponseEntity<ApiResult<RoleSimpleDTO>> put(
       @PathVariable(value = "id") final Long id, @RequestBody @Valid final RoleSimpleDTO payload) {
-    return Result.ok(
-        this.roleRepository
-            .findById(id)
-            .map(
-                (item) -> {
-                  item.change(payload);
-                  return new RoleSimpleDTO(this.roleRepository.save(item));
-                })
-            .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NO_DATA_SUCCESS)));
+    return Result.ok(this.roleService.put(id, payload));
   }
 
   @PostMapping(value = "save-all/")

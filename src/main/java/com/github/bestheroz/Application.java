@@ -11,8 +11,8 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @EnableJpaAuditing
-@SpringBootApplication(scanBasePackages = "com.github.bestheroz")
 @OpenAPIDefinition(servers = {@Server(url = "/", description = "Default Server URL")})
+@SpringBootApplication(scanBasePackages = "com.github.bestheroz")
 public class Application {
 
   public static void main(final String[] args) {

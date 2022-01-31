@@ -1,6 +1,7 @@
 package com.github.bestheroz.demo.api.internal.role;
 
 import com.github.bestheroz.demo.domain.Role;
+import com.github.bestheroz.demo.helper.recursive.RecursiveDTO;
 import com.github.bestheroz.standard.common.util.NullUtils;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -9,11 +10,13 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class RoleChildrenDTO {
+public class RoleChildrenDTO extends RecursiveDTO<RoleChildrenDTO, Role> {
   private Long id;
 
   @NotEmpty private String name;
@@ -41,13 +44,29 @@ public class RoleChildrenDTO {
     this.updatedBy = role.getUpdatedBy();
   }
 
-  public Role toRole(final Role parent, final Integer displayOrder) {
-    return Role.builder()
-        .id(this.id)
-        .name(this.name)
-        .available(this.available)
-        .parent(parent)
-        .displayOrder(displayOrder)
-        .build();
+  public Role toRole(final Role parent) {
+    final Role build =
+        Role.builder()
+            .id(this.id)
+            .name(this.name)
+            .available(this.available)
+            .parent(parent)
+            .displayOrder(999_999)
+            .build();
+
+    build.getChildren().addAll(this.children.stream().map(child -> child.toRole(build)).toList());
+
+    return build;
+  }
+
+  @Override
+  public Role toEntity(final Role parent, final Long key) {
+    return this.toRole(parent);
+  }
+
+  @Override
+  public void setIdNull() {
+    this.id = null;
+    this.children.forEach(RoleChildrenDTO::setIdNull);
   }
 }

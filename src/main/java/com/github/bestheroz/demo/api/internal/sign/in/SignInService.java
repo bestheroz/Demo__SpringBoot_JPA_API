@@ -1,13 +1,11 @@
 package com.github.bestheroz.demo.api.internal.sign.in;
 
-import com.github.bestheroz.demo.domain.Admin;
 import com.github.bestheroz.demo.repository.AdminRepository;
 import com.github.bestheroz.standard.common.authenticate.CustomUserDetails;
 import com.github.bestheroz.standard.common.authenticate.JwtTokenProvider;
 import com.github.bestheroz.standard.common.exception.BusinessException;
 import com.github.bestheroz.standard.common.exception.ExceptionCode;
 import java.time.Instant;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -38,8 +35,7 @@ public class SignInService implements UserDetailsService {
         .orElseThrow(() -> new UsernameNotFoundException("No user found by `" + loginId + "`"));
   }
 
-  @Transactional(propagation = Propagation.NEVER)
-  public Map<String, String> signIn(final String loginId, final String password) {
+  public TokenDTO signIn(final String loginId, final String password) {
     return this.adminRepository
         .findByLoginId(loginId)
         .map(
@@ -54,8 +50,7 @@ public class SignInService implements UserDetailsService {
               if (!pbkdf2PasswordEncoder.matches(
                   admin.getPassword(), pbkdf2PasswordEncoder.encode(password))) {
                 admin.plusSignInFailCnt();
-                this.adminRepository.save(admin);
-                throw new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN);
+                return new TokenDTO(null, null);
               }
 
               // 3. SIGN_IN_FAIL_CNT가 5회 이상 인가
@@ -68,32 +63,34 @@ public class SignInService implements UserDetailsService {
                   || admin.getExpired().toEpochMilli() < Instant.now().toEpochMilli()) {
                 throw new BusinessException(ExceptionCode.FAIL_SIGN_IN_CLOSED);
               }
-              return this.signedSuccess(admin);
+              admin.resetSignInFailCnt();
+              final CustomUserDetails customUserDetails = new CustomUserDetails(admin);
+              final String accessToken = JwtTokenProvider.createAccessToken(customUserDetails);
+              final String refreshToken = JwtTokenProvider.createRefreshToken(customUserDetails);
+              admin.signedSuccess(refreshToken);
+              return new TokenDTO(accessToken, refreshToken);
             })
         .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN));
   }
 
-  private Map<String, String> signedSuccess(final Admin admin) {
-    admin.resetSignInFailCnt();
-    final CustomUserDetails customUserDetails = new CustomUserDetails(admin);
-    final String accessToken = JwtTokenProvider.createAccessToken(customUserDetails);
-    final String refreshToken = JwtTokenProvider.createRefreshToken(customUserDetails);
-    admin.signedSuccess(refreshToken);
-    this.adminRepository.save(admin);
-    return Map.of("accessToken", accessToken, "refreshToken", refreshToken);
-  }
-
-  @Transactional(readOnly = true)
-  public String getNewAccessToken(final String refreshToken) {
+  @Transactional
+  public TokenDTO getNewToken(final String refreshToken) {
     return this.adminRepository
         .findByIdAndToken(JwtTokenProvider.getId(refreshToken), refreshToken)
         .map(
             admin -> {
-              final String newAccessToken =
-                  JwtTokenProvider.createAccessToken(new CustomUserDetails(admin));
+              final CustomUserDetails customUserDetails = new CustomUserDetails(admin);
+              final String newAccessToken = JwtTokenProvider.createAccessToken(customUserDetails);
               SecurityContextHolder.getContext()
                   .setAuthentication(JwtTokenProvider.getAuthentication(newAccessToken));
-              return newAccessToken;
+              // refreshToken 이 생성된지 5초 이내에 요청이 들어오면 존재하는 refreshToken 을 반환하자.
+              if (JwtTokenProvider.issuedRefreshTokenIn3Seconds(refreshToken)) {
+                return new TokenDTO(newAccessToken, admin.getToken());
+              }
+              // 동시 로그인을 허용하려면 refreshToken 은 새로 업데이트 하면 안된다.
+              final String newRefreshToken = JwtTokenProvider.createRefreshToken(customUserDetails);
+              admin.setToken(newRefreshToken);
+              return new TokenDTO(newAccessToken, newRefreshToken);
             })
         .orElseThrow(
             () -> {

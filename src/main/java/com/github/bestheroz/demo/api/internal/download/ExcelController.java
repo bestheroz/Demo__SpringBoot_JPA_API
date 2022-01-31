@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ExcelController {
   private final AdminRepository adminRepository;
   private final AdminService adminService;
-  private final Sort.Direction DEFAULT_SORT = Sort.DEFAULT_DIRECTION;
 
   @GetMapping(value = "admins")
   public String excelAdmins(
@@ -64,13 +62,13 @@ public class ExcelController {
    * @param model 모델
    * @param fileName 파일명
    * @param excelVOList 엑셀 VO 리스트
-   * @param repository 대상 레파지토리
+   * @param list 대상 레파지토리
    */
   private void excelMaker(
       final Model model,
       final String fileName,
       final List<ExcelVO> excelVOList,
-      final List<?> repository) {
+      final List<?> list) {
 
     // 작업일시, 작업자 공통 추가
     AbstractExcelXView.addHeader(excelVOList, "작업 일시", "updated", ExcelService.CellType.DATE);
@@ -79,12 +77,12 @@ public class ExcelController {
         "작업자",
         "updatedBy",
         ExcelService.CellType.STRING,
-        this.adminRepository.getCodes().stream()
+        this.adminRepository.getCodeVOs().stream()
             .map(c -> new CodeVO<>(c.value().toString(), c.text()))
             .toList());
 
     model.addAttribute(AbstractExcelXView.FILE_NAME, fileName);
     model.addAttribute(AbstractExcelXView.EXCEL_VOS, excelVOList);
-    model.addAttribute(AbstractExcelXView.LIST_DATA, repository);
+    model.addAttribute(AbstractExcelXView.LIST_DATA, list);
   }
 }

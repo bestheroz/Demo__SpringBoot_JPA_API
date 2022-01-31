@@ -36,6 +36,7 @@ public class ExternalCodeController {
   ResponseEntity<ApiResult<List<CodeVO<String>>>> getItems(
       @Parameter(description = "코드타입", example = "EXAMPLE") @Valid @RequestParam(value = "type")
           final String type) {
-    return Result.ok(this.codeRepository.getCodesByTypeAndAvailableOrderByDisplayOrder(type, true));
+    return Result.ok(
+        this.codeRepository.findCodeVOsByTypeAndAvailableOrderByDisplayOrder(type, true));
   }
 }

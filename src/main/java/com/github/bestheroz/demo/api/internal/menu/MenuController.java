@@ -1,7 +1,6 @@
 package com.github.bestheroz.demo.api.internal.menu;
 
 import com.github.bestheroz.demo.api.internal.role.menu.RoleMenuService;
-import com.github.bestheroz.demo.repository.MenuRepository;
 import com.github.bestheroz.demo.repository.RoleRepository;
 import com.github.bestheroz.standard.common.exception.BusinessException;
 import com.github.bestheroz.standard.common.exception.ExceptionCode;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MenuController {
   private final MenuService menuService;
-  private final MenuRepository menuRepository;
   private final RoleMenuService roleMenuService;
   private final RoleRepository roleRepository;
 
@@ -36,7 +34,7 @@ public class MenuController {
       @RequestParam(value = "childRoleId", required = false) final Long childRoleId) {
     if (roleId != null) {
       return Result.ok(
-          MenuService.getMenuChildrenDTOWithRecursiveChildren(
+          this.menuService.getMenuChildrenDTOWithRecursiveChildren(
               this.roleMenuService.getItems(roleId)));
     } else if (childRoleId != null) {
       return Result.ok(
@@ -47,7 +45,7 @@ public class MenuController {
                     if (r.getParent() == null) {
                       return this.menuService.getItems();
                     } else {
-                      return MenuService.getMenuChildrenDTOWithRecursiveChildren(
+                      return this.menuService.getMenuChildrenDTOWithRecursiveChildren(
                           this.roleMenuService.getItems(r.getParent().getId()));
                     }
                   })
@@ -59,21 +57,13 @@ public class MenuController {
   @PostMapping
   public ResponseEntity<ApiResult<MenuChildrenDTO>> post(
       @RequestBody @Valid final MenuSimpleDTO payload) {
-    return Result.created(new MenuChildrenDTO(this.menuRepository.save(payload.toMenu(1000))));
+    return Result.created(this.menuService.persist(payload));
   }
 
   @PutMapping(value = "{id}")
   public ResponseEntity<ApiResult<MenuChildrenDTO>> put(
       @PathVariable(value = "id") final Long id, @RequestBody @Valid final MenuSimpleDTO payload) {
-    return Result.ok(
-        this.menuRepository
-            .findById(id)
-            .map(
-                (item) -> {
-                  item.changeMenu(payload);
-                  return new MenuChildrenDTO(this.menuRepository.save(item));
-                })
-            .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NO_DATA_SUCCESS)));
+    return Result.ok(this.menuService.put(id, payload));
   }
 
   @DeleteMapping(value = "{id}")

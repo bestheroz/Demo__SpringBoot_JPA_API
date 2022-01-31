@@ -45,7 +45,6 @@ public abstract class AbstractExcelXView extends AbstractView {
   public static final String FILE_NAME = "fileName";
   public static final String PASSWORD = "password";
   public static final String EXCEL_VOS = "excelVOs";
-  public static final String SQL = "SQL";
   public static final String LIST_DATA = "listData";
   /** The content type for an Excel response */
   private static final String CONTENT_TYPE =

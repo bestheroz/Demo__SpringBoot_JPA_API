@@ -1,5 +1,6 @@
 package com.github.bestheroz.demo.domain;
 
+import com.github.bestheroz.demo.api.internal.code.CodeDTO;
 import java.io.Serial;
 import java.io.Serializable;
 import javax.persistence.Entity;
@@ -29,4 +30,13 @@ public class Code extends BaseAuditEntity implements Serializable {
   private String text;
   private Boolean available;
   private Integer displayOrder;
+
+  public Code change(final CodeDTO dto) {
+    this.type = dto.getType();
+    this.value = dto.getValue();
+    this.text = dto.getText();
+    this.available = dto.getAvailable();
+    this.displayOrder = dto.getDisplayOrder();
+    return this;
+  }
 }

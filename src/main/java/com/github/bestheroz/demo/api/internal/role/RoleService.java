@@ -1,16 +1,17 @@
 package com.github.bestheroz.demo.api.internal.role;
 
 import com.github.bestheroz.demo.domain.Role;
+import com.github.bestheroz.demo.helper.recursive.RecursiveEntityHelper;
 import com.github.bestheroz.demo.repository.RoleRepository;
+import com.github.bestheroz.standard.common.exception.BusinessException;
+import com.github.bestheroz.standard.common.exception.ExceptionCode;
 import com.github.bestheroz.standard.common.util.AuthenticationUtils;
-import com.github.bestheroz.standard.common.util.NullUtils;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,50 +19,39 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class RoleService {
+  private final EntityManager entityManager;
   private final RoleRepository roleRepository;
+
+  private Role persist(final Role role) {
+    this.entityManager.persist(role);
+    return role;
+  }
+
+  public RoleChildrenDTO persist(final Long parentId, final RoleSimpleDTO dto) {
+    return new RoleChildrenDTO(this.persist(dto.toRole(parentId, 1000, List.of())));
+  }
 
   @Transactional(readOnly = true)
   public List<RoleChildrenDTO> getItems() {
-    return this.roleRepository.findAllByParentIdNullOrderByDisplayOrderAsc().stream()
+    return this.roleRepository
+        .findAllByParentIdNullOrderByDisplayOrderAsc()
         .map(RoleChildrenDTO::new)
         .toList();
   }
 
-  public List<RoleChildrenDTO> saveAll(final List<RoleChildrenDTO> payload) {
-    if (AuthenticationUtils.isSuperAdmin()) {
-      final Set<Long> deleteIds = new HashSet<>();
-      this.setRoleIdsByIdWithDTORecursiveChildren(deleteIds, payload);
-      this.roleRepository.deleteByIdNotInAndParentIdNull(deleteIds);
-    }
-    return IterableUtils.toList(
-            this.roleRepository.saveAll(this.getRoleWithRecursiveChildren(payload, null)))
-        .stream()
+  public List<RoleChildrenDTO> saveAll(final List<RoleChildrenDTO> dtos) {
+    // 조회
+    final List<Role> oldEntities = this.roleRepository.findAllByIdNotAndParentIdNull(1L).toList();
+
+    final RecursiveEntityHelper<Role, RoleChildrenDTO> helper = new RecursiveEntityHelper<>();
+
+    // 이동된 root 엔티티 삭제
+    final List<Role> entities = helper.deleteAndGetRemains(oldEntities, dtos, this.roleRepository);
+    // 모두 저장
+    return helper
+        .saveAll(entities, dtos, this.entityManager, null, null)
         .map(RoleChildrenDTO::new)
         .toList();
-  }
-
-  private void setRoleIdsByIdWithDTORecursiveChildren(
-      final Set<Long> roleIdList, final List<RoleChildrenDTO> list) {
-    list.forEach(
-        r -> {
-          roleIdList.add(r.getId());
-          this.setRoleIdsByIdWithDTORecursiveChildren(roleIdList, r.getChildren());
-        });
-  }
-
-  private List<Role> getRoleWithRecursiveChildren(
-      final List<RoleChildrenDTO> roleChildrenDTOS, final Role parent) {
-    int displayOrder = 1;
-    final List<Role> result = new ArrayList<>();
-    for (final RoleChildrenDTO roleChildrenDTO : roleChildrenDTOS) {
-      final Role role = roleChildrenDTO.toRole(parent, displayOrder++);
-      if (NullUtils.isNotEmpty(roleChildrenDTO.getChildren())) {
-        role.getChildren()
-            .addAll(this.getRoleWithRecursiveChildren(roleChildrenDTO.getChildren(), role));
-      }
-      result.add(role);
-    }
-    return result;
   }
 
   public Set<Long> getFlatRoleIdsByIdWithRecursiveChildren(final Long id) {
@@ -93,8 +83,16 @@ public class RoleService {
     } else {
       ids = this.getFlatRoleIdsByIdWithRecursiveChildren(AuthenticationUtils.getRoleId());
     }
-    return this.roleRepository.getRolesByIdInAndAvailable(ids, available).stream()
+    return this.roleRepository
+        .getAllByIdInAndAvailable(ids, available)
         .map(RoleSimpleDTO::new)
         .toList();
+  }
+
+  public RoleSimpleDTO put(final Long id, final RoleSimpleDTO payload) {
+    return this.roleRepository
+        .findById(id)
+        .map((item) -> new RoleSimpleDTO(item.change(payload)))
+        .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NO_DATA_SUCCESS));
   }
 }
