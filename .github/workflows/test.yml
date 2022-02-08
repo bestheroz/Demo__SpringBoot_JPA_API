@@ -32,7 +32,7 @@ jobs:
           status: ${{ job.status }}
           mention: 'channel'
           if_mention: always
-          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest
+          fields: repo,message,commit,author,eventName,ref,workflow
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
