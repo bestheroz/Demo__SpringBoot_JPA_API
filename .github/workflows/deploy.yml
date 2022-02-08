@@ -30,7 +30,7 @@ jobs:
 
       - uses: ./.github/actions/build-gradle
 
-      - uses: 8398a7/action-slack@main
+      - uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
           mention: 'channel'
