@@ -6,6 +6,5 @@ runs:
   steps:
     - run: |
         echo "gradle build"
-        chmod +x gradlew
         ./gradlew build --no-daemon --exclude-task test -Dspring.profiles.active=dev
       shell: bash
