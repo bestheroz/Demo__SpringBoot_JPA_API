@@ -27,12 +27,12 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@main
         with:
+          gradle-version: current
           arguments: |
             build
             --no-daemon
             --exclude-task test
             -Dspring.profiles.active=dev
-      #      - uses: ./.github/actions/build-gradle
 
       - uses: 8398a7/action-slack@v3
         with:
