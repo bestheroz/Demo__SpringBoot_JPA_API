@@ -1,8 +1,7 @@
 name: Test
 
-on:
-  push:
-    branches-ignore: [ main, RC/** ]
+on: push
+#    branches-ignore: [main, RC/**]
 
 jobs:
   test:
