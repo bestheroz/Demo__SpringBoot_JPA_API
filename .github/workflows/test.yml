@@ -34,11 +34,9 @@ jobs:
             --exclude-task test
             -Dspring.profiles.active=dev
 
-      - uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          if_mention: always
-          fields: repo,message,commit,author,eventName,ref,workflow
+      - uses: act10ns/slack@master
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          status: ${{ job.status }}
         if: always()
