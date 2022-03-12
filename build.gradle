@@ -16,7 +16,7 @@ ext.javaJwtVersion = "3.18.3"
 ext.comonsIoVersion = "2.11.0"
 ext.tikaVersion = "2.3.0"
 ext.poiVersion = "5.2.1"
-ext.sentryVersion = "6.0.0-alpha.2"
+ext.sentryVersion = "6.0.0-alpha.3"
 ext.springdocVersion = "1.6.6"
 ext.hibernateTypesVersion = "2.14.0"
 ext.p6spyVersion = "1.8.0"
@@ -71,7 +71,7 @@ spotless {
     java {
         removeUnusedImports()
 
-        googleJavaFormat('1.13.0')
+        googleJavaFormat('1.15.0')
     }
 }
 
