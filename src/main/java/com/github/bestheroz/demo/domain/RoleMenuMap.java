@@ -8,12 +8,15 @@ import com.github.bestheroz.standard.common.util.NullUtils;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,6 +32,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Builder
@@ -36,6 +44,7 @@ import org.hibernate.annotations.TypeDef;
 @TypeDef(name = "jsonString", typeClass = JsonStringType.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@EntityListeners(AuditingEntityListener.class)
 public class RoleMenuMap extends RecursiveEntity<RoleMenuMap, RoleMenuChildrenDTO>
     implements Serializable {
   @Serial private static final long serialVersionUID = -4753709861734048435L;
@@ -70,6 +79,18 @@ public class RoleMenuMap extends RecursiveEntity<RoleMenuMap, RoleMenuChildrenDT
   @Type(type = "jsonString")
   @Builder.Default
   private final Set<RoleAuthorityType> authoritiesJson = new HashSet<>();
+
+  @Column(updatable = false)
+  @CreatedBy
+  protected Long createdBy;
+
+  @LastModifiedBy protected Long updatedBy;
+
+  @Column(updatable = false)
+  @CreatedDate
+  protected Instant created;
+
+  @LastModifiedDate protected Instant updated;
 
   @Override
   public RoleMenuMap change(final RoleMenuChildrenDTO dto, final RoleMenuMap parent) {

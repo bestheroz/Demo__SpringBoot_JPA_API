@@ -31,12 +31,11 @@ public class Code extends BaseAuditEntity implements Serializable {
   private Boolean available;
   private Integer displayOrder;
 
-  public Code change(final CodeDTO dto) {
+  public void change(final CodeDTO dto) {
     this.type = dto.getType();
     this.value = dto.getValue();
     this.text = dto.getText();
     this.available = dto.getAvailable();
     this.displayOrder = dto.getDisplayOrder();
-    return this;
   }
 }

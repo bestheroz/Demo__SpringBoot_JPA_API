@@ -5,11 +5,14 @@ import com.github.bestheroz.demo.api.internal.menu.MenuSimpleDTO;
 import com.github.bestheroz.demo.helper.recursive.RecursiveEntity;
 import com.github.bestheroz.demo.helper.recursive.RecursiveEntityChildrenHelper;
 import com.github.bestheroz.demo.type.MenuType;
+import com.github.bestheroz.standard.common.util.AuthenticationUtils;
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -26,6 +29,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 
 @Getter
 @Builder
@@ -66,13 +71,25 @@ public class Menu extends RecursiveEntity<Menu, MenuChildrenDTO> implements Seri
   @Builder.Default
   private final List<RoleMenuMap> roleMenuMaps = new ArrayList<>();
 
-  public Menu change(final MenuSimpleDTO dto) {
+  @Column(updatable = false)
+  @CreatedBy
+  protected Long createdBy;
+
+  @CreatedBy protected Long updatedBy;
+
+  @Column(updatable = false)
+  @CreatedDate
+  protected Instant created;
+
+  @CreatedDate protected Instant updated;
+
+  public void change(final MenuSimpleDTO dto) {
     this.name = dto.getName();
     this.type = dto.getType();
     this.url = dto.getUrl();
     this.icon = dto.getIcon();
-
-    return this;
+    this.updatedBy = AuthenticationUtils.getId();
+    this.updated = Instant.now();
   }
 
   @Override

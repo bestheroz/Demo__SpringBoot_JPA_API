@@ -37,13 +37,12 @@ public class AdminConfig extends BaseAuditEntity implements Serializable {
   private Boolean contentBoxed;
   private String primaryColor;
 
-  public AdminConfig change(final MineConfigDTO dto) {
+  public void change(final MineConfigDTO dto) {
     this.globalTheme = dto.getGlobalTheme();
     this.toolbarTheme = dto.getToolbarTheme();
     this.menuTheme = dto.getMenuTheme();
     this.toolbarDetached = dto.getToolbarDetached();
     this.contentBoxed = dto.getContentBoxed();
     this.primaryColor = dto.getPrimaryColor();
-    return this;
   }
 }

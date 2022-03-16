@@ -5,6 +5,7 @@ import com.github.bestheroz.demo.api.internal.role.RoleChildrenDTO;
 import com.github.bestheroz.demo.api.internal.role.RoleMapsDTO;
 import com.github.bestheroz.demo.api.internal.role.menu.RoleMenuChildrenDTO;
 import com.github.bestheroz.demo.domain.Admin;
+import com.github.bestheroz.demo.domain.AdminConfig;
 import com.github.bestheroz.demo.repository.AdminConfigRepository;
 import com.github.bestheroz.demo.repository.AdminRepository;
 import com.github.bestheroz.demo.repository.RoleRepository;
@@ -12,6 +13,7 @@ import com.github.bestheroz.standard.common.exception.BusinessException;
 import com.github.bestheroz.standard.common.exception.ExceptionCode;
 import com.github.bestheroz.standard.common.util.AuthenticationUtils;
 import java.util.List;
+import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class MineService {
+  private final EntityManager entityManager;
   private final MenuService menuService;
   private final RoleRepository roleRepository;
   private final AdminRepository adminRepository;
@@ -92,10 +95,12 @@ public class MineService {
   }
 
   public MineConfigDTO changeConfig(final MineConfigDTO payload) {
-    return new MineConfigDTO(
+    final AdminConfig adminConfig =
         this.adminConfigRepository
             .findByAdminId(AuthenticationUtils.getId())
-            .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN))
-            .change(payload));
+            .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN));
+    adminConfig.change(payload);
+    this.entityManager.flush();
+    return new MineConfigDTO(adminConfig);
   }
 }

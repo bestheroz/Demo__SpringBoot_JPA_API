@@ -1,6 +1,7 @@
 package com.github.bestheroz.demo.api.internal.code;
 
 import com.github.bestheroz.demo.repository.CodeRepository;
+import com.github.bestheroz.standard.common.dto.DisplayOrderDTO;
 import com.github.bestheroz.standard.common.response.ApiResult;
 import com.github.bestheroz.standard.common.response.Result;
 import java.util.List;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -55,9 +57,9 @@ public class CodeController {
     return Result.ok();
   }
 
-  @PostMapping(value = "save-all/")
-  public ResponseEntity<ApiResult<List<CodeDTO>>> saveAll(
-      @RequestBody @Valid final List<CodeDTO> payload) {
-    return Result.created(this.codeService.saveAll(payload));
+  @PatchMapping(value = "display-orders/")
+  public ResponseEntity<ApiResult<List<CodeDTO>>> patchDisplayOrder(
+      @RequestParam final String type, @RequestBody @Valid final List<DisplayOrderDTO> payload) {
+    return Result.created(this.codeService.patchDisplayOrders(type, payload));
   }
 }

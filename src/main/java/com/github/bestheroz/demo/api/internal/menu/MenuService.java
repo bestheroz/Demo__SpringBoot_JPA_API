@@ -78,7 +78,12 @@ public class MenuService {
   public MenuChildrenDTO put(final Long id, final MenuSimpleDTO payload) {
     return this.menuRepository
         .findById(id)
-        .map((item) -> new MenuChildrenDTO(item.change(payload)))
+        .map(
+            (item) -> {
+              item.change(payload);
+              this.entityManager.flush();
+              return new MenuChildrenDTO();
+            })
         .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NO_DATA_SUCCESS));
   }
 }

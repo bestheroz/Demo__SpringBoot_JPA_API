@@ -1,8 +1,6 @@
 package com.github.bestheroz.demo.helper.recursive;
 
-import com.github.bestheroz.demo.domain.BaseAuditEntity;
-
-public abstract class RecursiveEntity<E, D> extends BaseAuditEntity {
+public abstract class RecursiveEntity<E, D> {
 
   public abstract Long getId();
 

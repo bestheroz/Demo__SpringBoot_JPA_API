@@ -92,7 +92,12 @@ public class RoleService {
   public RoleSimpleDTO put(final Long id, final RoleSimpleDTO payload) {
     return this.roleRepository
         .findById(id)
-        .map((item) -> new RoleSimpleDTO(item.change(payload)))
+        .map(
+            (role) -> {
+              role.change(payload);
+              this.entityManager.flush();
+              return new RoleSimpleDTO(role);
+            })
         .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NO_DATA_SUCCESS));
   }
 }

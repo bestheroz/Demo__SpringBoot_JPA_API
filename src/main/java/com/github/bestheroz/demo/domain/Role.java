@@ -4,11 +4,14 @@ import com.github.bestheroz.demo.api.internal.role.RoleChildrenDTO;
 import com.github.bestheroz.demo.api.internal.role.RoleSimpleDTO;
 import com.github.bestheroz.demo.helper.recursive.RecursiveEntity;
 import com.github.bestheroz.demo.helper.recursive.RecursiveEntityChildrenHelper;
+import com.github.bestheroz.standard.common.util.AuthenticationUtils;
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -23,6 +26,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 
 @Getter
 @Builder
@@ -62,10 +67,23 @@ public class Role extends RecursiveEntity<Role, RoleChildrenDTO> implements Seri
   private Boolean available;
   private Integer displayOrder;
 
-  public Role change(final RoleSimpleDTO dto) {
+  @Column(updatable = false)
+  @CreatedBy
+  protected Long createdBy;
+
+  @CreatedBy protected Long updatedBy;
+
+  @Column(updatable = false)
+  @CreatedDate
+  protected Instant created;
+
+  @CreatedDate protected Instant updated;
+
+  public void change(final RoleSimpleDTO dto) {
     this.name = dto.getName();
     this.available = dto.getAvailable();
-    return this;
+    this.updatedBy = AuthenticationUtils.getId();
+    this.updated = Instant.now();
   }
 
   @Override
