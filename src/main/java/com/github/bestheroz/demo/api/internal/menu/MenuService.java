@@ -79,10 +79,10 @@ public class MenuService {
     return this.menuRepository
         .findById(id)
         .map(
-            (item) -> {
-              item.change(payload);
+            (menu) -> {
+              menu.change(payload);
               this.entityManager.flush();
-              return new MenuChildrenDTO();
+              return new MenuChildrenDTO(menu);
             })
         .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NO_DATA_SUCCESS));
   }
