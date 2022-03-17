@@ -12,7 +12,7 @@ repositories {
     mavenCentral()
 }
 
-ext.javaJwtVersion = "3.18.3"
+ext.javaJwtVersion = "3.19.0"
 ext.comonsIoVersion = "2.11.0"
 ext.tikaVersion = "2.3.0"
 ext.poiVersion = "5.2.1"
