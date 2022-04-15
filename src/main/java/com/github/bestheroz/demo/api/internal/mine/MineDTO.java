@@ -14,7 +14,10 @@ public class MineDTO {
   private String loginId;
   private String name;
   private RoleSimpleDTO role;
+  private Long createdBy;
   private Instant created;
+
+  private Long updatedBy;
   private Instant updated;
 
   public MineDTO(final Admin admin) {
@@ -23,6 +26,8 @@ public class MineDTO {
     this.loginId = admin.getLoginId();
     this.role = new RoleSimpleDTO(admin.getRole());
     this.created = admin.getCreated();
+    this.createdBy = admin.getCreatedBy();
     this.updated = admin.getUpdated();
+    this.updatedBy = admin.getUpdatedBy();
   }
 }
