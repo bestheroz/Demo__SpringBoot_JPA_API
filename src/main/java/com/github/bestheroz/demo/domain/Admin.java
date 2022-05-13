@@ -78,7 +78,7 @@ public class Admin implements Serializable {
     this.token = null;
   }
 
-  public Admin setPassword(final String password) {
+  public Admin changePassword(final String password) {
     this.password = password;
     this.updated = Instant.now();
     this.updatedBy = AuthenticationUtils.getId();
@@ -86,7 +86,7 @@ public class Admin implements Serializable {
     return this;
   }
 
-  public Admin setName(final String name) {
+  public Admin changeName(final String name) {
     this.name = name;
     this.updated = Instant.now();
     this.updatedBy = AuthenticationUtils.getId();

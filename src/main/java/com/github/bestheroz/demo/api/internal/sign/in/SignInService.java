@@ -13,7 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SignInService implements UserDetailsService {
   private final AdminRepository adminRepository;
+  private final PasswordEncoder passwordEncoder;
 
   @Override
   public UserDetails loadUserByUsername(final String loginId) throws UsernameNotFoundException {
@@ -45,10 +46,8 @@ public class SignInService implements UserDetailsService {
                 throw new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN);
               }
 
-              final Pbkdf2PasswordEncoder pbkdf2PasswordEncoder = new Pbkdf2PasswordEncoder();
               // 2. 패스워드가 틀리면
-              if (!pbkdf2PasswordEncoder.matches(
-                  admin.getPassword(), pbkdf2PasswordEncoder.encode(password))) {
+              if (!this.passwordEncoder.matches(password, admin.getPassword())) {
                 admin.plusSignInFailCnt();
                 return new TokenDTO(null, null);
               }

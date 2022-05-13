@@ -10,6 +10,7 @@ import com.github.bestheroz.standard.common.util.AuthenticationUtils;
 import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ public class AdminService {
   private final EntityManager entityManager;
   private final AdminRepository adminRepository;
   private final RoleService roleService;
+  private final PasswordEncoder passwordEncoder;
 
   private Admin persist(final Admin admin) {
     this.entityManager.persist(admin);
@@ -27,6 +29,7 @@ public class AdminService {
   }
 
   public AdminDTO persist(final AdminPasswordDTO dto) {
+    dto.setPassword(this.passwordEncoder.encode(dto.getPassword()));
     return new AdminDTO(this.persist(dto.toAdmin()));
   }
 
@@ -70,7 +73,7 @@ public class AdminService {
         .findById(id)
         .map(
             (item) -> {
-              return new AdminDTO(item.setPassword(password));
+              return new AdminDTO(item.changePassword(password));
             })
         .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NO_DATA_SUCCESS));
   }

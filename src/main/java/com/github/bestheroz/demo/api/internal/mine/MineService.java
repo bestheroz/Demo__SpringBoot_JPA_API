@@ -15,7 +15,7 @@ import com.github.bestheroz.standard.common.util.AuthenticationUtils;
 import java.util.List;
 import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +28,7 @@ public class MineService {
   private final RoleRepository roleRepository;
   private final AdminRepository adminRepository;
   private final AdminConfigRepository adminConfigRepository;
+  private final PasswordEncoder passwordEncoder;
 
   @Transactional(readOnly = true)
   public MineDTO getMyInfo() {
@@ -69,18 +70,16 @@ public class MineService {
         .findById(AuthenticationUtils.getId())
         .map(
             admin -> {
-              this.verifyPassword(admin.getPassword(), payload.getPassword());
-              return new EditMeDTO(admin.setName(payload.getName()));
+              this.verifyPassword(payload.getPassword(), admin.getPassword());
+              return new EditMeDTO(admin.changeName(payload.getName()));
             })
         .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN));
   }
 
   // 패스워드 검증 공통 함수
-  public void verifyPassword(final String adminPassword, final String payload) {
-    final Pbkdf2PasswordEncoder pbkdf2PasswordEncoder = new Pbkdf2PasswordEncoder();
-
+  public void verifyPassword(final String rawPassword, final String encodedPassword) {
     // 패스워드가 틀리면
-    if (!pbkdf2PasswordEncoder.matches(adminPassword, pbkdf2PasswordEncoder.encode(payload))) {
+    if (!this.passwordEncoder.matches(rawPassword, encodedPassword)) {
       throw new BusinessException(ExceptionCode.FAIL_MATCH_PASSWORD);
     }
   }
@@ -90,8 +89,8 @@ public class MineService {
         this.adminRepository
             .findById(AuthenticationUtils.getId())
             .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN));
-    this.verifyPassword(admin.getPassword(), payload.getOldPassword());
-    admin.setPassword(payload.getNewPassword());
+    this.verifyPassword(payload.getOldPassword(), admin.getPassword());
+    admin.changePassword(payload.getNewPassword());
   }
 
   public MineConfigDTO changeConfig(final MineConfigDTO payload) {
