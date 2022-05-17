@@ -94,12 +94,24 @@ public class MineService {
   }
 
   public MineConfigDTO changeConfig(final MineConfigDTO payload) {
-    final AdminConfig adminConfig =
-        this.adminConfigRepository
-            .findByAdminId(AuthenticationUtils.getId())
-            .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN));
-    adminConfig.change(payload);
-    this.entityManager.flush();
-    return new MineConfigDTO(adminConfig);
+    return this.adminConfigRepository
+        .findByAdminId(AuthenticationUtils.getId())
+        .map(
+            (adminConfig) -> {
+              adminConfig.change(payload);
+              this.entityManager.flush();
+              return new MineConfigDTO(adminConfig);
+            })
+        .orElseGet(
+            () -> {
+              final Admin admin =
+                  this.adminRepository
+                      .findById(AuthenticationUtils.getId())
+                      .orElseThrow(
+                          () -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN));
+              final AdminConfig adminConfig = payload.toAdminConfig(admin);
+              this.entityManager.persist(adminConfig);
+              return new MineConfigDTO(adminConfig);
+            });
   }
 }
