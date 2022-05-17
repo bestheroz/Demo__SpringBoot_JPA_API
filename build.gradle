@@ -2,7 +2,7 @@ plugins {
     id "org.springframework.boot" version "2.6.7"
     id "java"
     id "idea"
-    id "com.diffplug.spotless" version "6.6.0"
+    id "com.diffplug.spotless" version "6.6.1"
     id "com.github.ben-manes.versions" version "0.42.0"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
@@ -12,7 +12,7 @@ repositories {
     mavenCentral()
 }
 
-ext.javaJwtVersion = "3.19.0"
+ext.javaJwtVersion = "4.0.0-beta.0"
 ext.comonsIoVersion = "2.11.0"
 ext.tikaVersion = "2.4.0"
 ext.poiVersion = "5.2.2"
