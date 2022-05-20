@@ -1,4 +1,4 @@
-INSERT INTO code (type, value, text, available, display_order, created_by, created, updated_by,
+INSERT INTO code (type, `value`, text, available, display_order, created_by, created, updated_by,
                   updated)
 VALUES ('SAMPLE', 'S1', '샘플1', TRUE, 3, 1, NOW(), 1, NOW()),
        ('SAMPLE', 'S2', '샘플2', TRUE, 5, 1, NOW(), 1, NOW()),
