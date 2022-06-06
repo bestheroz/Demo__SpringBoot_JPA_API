@@ -9,4 +9,4 @@ CREATE TABLE role
     created       DATETIME     NOT NULL,
     updated_by    BIGINT(20) NOT NULL,
     updated       DATETIME     NOT NULL
-);
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
