@@ -38,15 +38,6 @@ server:
       charset: UTF-8
       enabled: true
       force: true
-management:
-  endpoint:
-    health:
-      enabled: true
-  endpoints:
-    enabled-by-default: false
-    web:
-      exposure:
-        include: health
 springdoc:
   paths-to-match:
     - /api/v1/**
@@ -75,12 +66,6 @@ server:
 sentry:
   logging:
     enabled: false
-management:
-  endpoint:
-    health:
-      enabled: false
-  endpoints:
-    enabled-by-default: false
 environment:
   app:
     test: test
