@@ -8,7 +8,7 @@ CREATE TABLE menu
     icon          VARCHAR(50),
     url           VARCHAR(4000),
     created_by    BIGINT(20) NOT NULL,
-    created       DATETIME      NOT NULL,
+    created       DATETIME(6) NOT NULL,
     updated_by    BIGINT(20) NOT NULL,
-    updated       DATETIME      NOT NULL
+    updated       DATETIME(6) NOT NULL
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

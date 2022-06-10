@@ -9,7 +9,7 @@ CREATE TABLE `admin_config`
     `content_boxed`    BOOLEAN DEFAULT FALSE NOT NULL,
     `primary_color`    VARCHAR(16)           NOT NULL,
     `created_by`       BIGINT(20) NOT NULL,
-    `created`          DATETIME              NOT NULL,
+    `created`          DATETIME(6) NOT NULL,
     `updated_by`       BIGINT(20) NOT NULL,
-    `updated`          DATETIME              NOT NULL
+    `updated`          DATETIME(6) NOT NULL
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
