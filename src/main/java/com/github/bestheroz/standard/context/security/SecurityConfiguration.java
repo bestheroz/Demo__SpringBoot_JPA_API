@@ -45,7 +45,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             UsernamePasswordAuthenticationFilter.class)
         .csrf()
         .disable()
-        .cors();
+        .cors()
+        .configurationSource(this.corsConfigurationSource());
   }
 
   @Bean
