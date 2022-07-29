@@ -62,13 +62,13 @@ public class ExcelController {
    * @param model 모델
    * @param fileName 파일명
    * @param excelVOList 엑셀 VO 리스트
-   * @param list 대상 레파지토리
+   * @param repository 대상 레파지토리
    */
   private void excelMaker(
       final Model model,
       final String fileName,
       final List<ExcelVO> excelVOList,
-      final List<?> list) {
+      final List<?> repository) {
 
     // 작업일시, 작업자 공통 추가
     AbstractExcelXView.addHeader(excelVOList, "작업 일시", "updated", ExcelService.CellType.DATE);
@@ -83,6 +83,6 @@ public class ExcelController {
 
     model.addAttribute(AbstractExcelXView.FILE_NAME, fileName);
     model.addAttribute(AbstractExcelXView.EXCEL_VOS, excelVOList);
-    model.addAttribute(AbstractExcelXView.LIST_DATA, list);
+    model.addAttribute(AbstractExcelXView.LIST_DATA, repository);
   }
 }

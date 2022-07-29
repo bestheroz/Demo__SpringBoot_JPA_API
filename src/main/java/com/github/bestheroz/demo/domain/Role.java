@@ -38,6 +38,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Role extends RecursiveEntity<Role, RoleChildrenDTO> implements Serializable {
+
   @Serial private static final long serialVersionUID = 8475626710152801949L;
 
   @Id
@@ -81,6 +82,8 @@ public class Role extends RecursiveEntity<Role, RoleChildrenDTO> implements Seri
   protected Instant created;
 
   @CreatedDate protected Instant updated;
+
+  private Boolean deleted;
 
   public void change(final RoleSimpleDTO dto) {
     this.name = dto.getName();

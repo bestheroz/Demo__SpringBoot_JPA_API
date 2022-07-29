@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -63,6 +64,12 @@ public class AdminController {
   @GetMapping(value = "exists-login-id")
   public ResponseEntity<ApiResult<Boolean>> existsLoginId(
       @RequestParam(required = false) final String loginId) {
-    return Result.ok(this.adminRepository.existsByLoginId(loginId));
+    return Result.ok(
+        this.adminRepository.existsByLoginIdAndDeletedIsFalseAndRoleDeletedIsFalse(loginId));
+  }
+
+  @DeleteMapping(value = "{id}")
+  public ResponseEntity<ApiResult<AdminDTO>> remove(@PathVariable(value = "id") final Long id) {
+    return Result.ok(this.adminService.remove(id));
   }
 }

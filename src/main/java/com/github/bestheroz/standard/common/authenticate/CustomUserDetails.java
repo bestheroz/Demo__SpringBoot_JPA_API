@@ -2,6 +2,7 @@ package com.github.bestheroz.standard.common.authenticate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.bestheroz.demo.domain.Admin;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,7 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CustomUserDetails implements UserDetails, Serializable {
-  private static final long serialVersionUID = -3806331610004769750L;
+  @Serial private static final long serialVersionUID = -3806331610004769750L;
   private Long id;
   private String loginId;
   private String name;

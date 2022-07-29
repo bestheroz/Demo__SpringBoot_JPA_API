@@ -41,15 +41,13 @@ public class P6spyConfig {
       }
 
       if (Category.STATEMENT.getName().equals(category)) {
-        if (sql.startsWith("create") || sql.startsWith("alter") || sql.startsWith("comment")) {
-          return FormatStyle.DDL.getFormatter().format(sql);
-        } else {
-          if (StaticConfig.LOCAL_ACTIVE_PROFILE_FLAG) {
+        if (StaticConfig.LOCAL_ACTIVE_PROFILE_FLAG) {
+          if (sql.startsWith("create") || sql.startsWith("alter") || sql.startsWith("comment")) {
+            return FormatStyle.DDL.getFormatter().format(sql);
+          } else {
             return FormatStyle.HIGHLIGHT
                 .getFormatter()
                 .format(FormatStyle.BASIC.getFormatter().format(sql));
-          } else {
-            return FormatStyle.BASIC.getFormatter().format(sql);
           }
         }
       }

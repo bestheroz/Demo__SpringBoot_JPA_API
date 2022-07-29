@@ -12,7 +12,7 @@ public interface AdminRepository
     extends CrudRepository<Admin, Long>, QueryByExampleExecutor<Admin>, AdminRepositoryCustom {
   Optional<Admin> findByIdAndToken(Long id, String token);
 
-  Optional<Admin> findByLoginId(String loginId);
+  Optional<Admin> findByLoginIdAndDeletedIsFalseAndRoleDeletedIsFalse(String loginId);
 
-  boolean existsByLoginId(String loginId);
+  boolean existsByLoginIdAndDeletedIsFalseAndRoleDeletedIsFalse(String loginId);
 }

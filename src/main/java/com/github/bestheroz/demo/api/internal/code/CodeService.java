@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class CodeService {
+
   private final EntityManager entityManager;
   private final CodeRepository codeRepository;
 

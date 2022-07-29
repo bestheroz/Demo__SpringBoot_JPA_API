@@ -16,8 +16,9 @@ spring:
       hibernate:
         default_batch_fetch_size: 1000
     open-in-view: false
+    database-platform: org.hibernate.dialect.MySQL8Dialect
   datasource:
-    driver-class-name: software.aws.rds.jdbc.mysql.Driver
+    driver-class-name: com.amazonaws.secretsmanager.sql.AWSSecretsManagerMySQLDriver
   jackson:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
@@ -39,8 +40,8 @@ server:
       enabled: true
       force: true
 springdoc:
-  paths-to-match:
-    - /api/v1/**
+  api-docs:
+    enabled: false
 decorator:
   datasource:
     p6spy:
@@ -58,11 +59,13 @@ spring:
     hikari:
       maximum-pool-size: 3
       minimum-idle: 2
-  h2:
-    console:
-      enabled: true
 server:
   port: 8080
+springdoc:
+  api-docs:
+    enabled: true
+  paths-to-match:
+    - /api/v1/**
 sentry:
   logging:
     enabled: false
@@ -79,10 +82,15 @@ spring:
     username:
     password:
     hikari:
-      maximum-pool-size: 10
-      minimum-idle: 10
+      maximum-pool-size: 3
+      minimum-idle: 2
 server:
-  port: 8080
+  port: 8000
+springdoc:
+  api-docs:
+    enabled: true
+  paths-to-match:
+    - /api/v1/**
 sentry:
   dsn: https://7bb0a4fc0ddc4803998ee772401e3cfc@o368486.ingest.sentry.io/5197118
   environment: sandbox

@@ -5,6 +5,7 @@ CREATE TABLE role
     name          VARCHAR(100) NOT NULL,
     available     BOOLEAN      NOT NULL,
     display_order INT(3) NOT NULL,
+    deleted       BOOLEAN      NOT NULL default false,
     created_by    BIGINT(20) NOT NULL,
     created       DATETIME(6) NOT NULL,
     updated_by    BIGINT(20) NOT NULL,

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class AdminService {
+
   private final EntityManager entityManager;
   private final AdminRepository adminRepository;
   private final RoleService roleService;
@@ -57,13 +58,14 @@ public class AdminService {
     return this.adminRepository
         .findById(id)
         .map(
-            (item) -> {
-              if (!item.getLoginId().equals(payload.getLoginId())) {
-                if (this.adminRepository.existsByLoginId(payload.getLoginId())) {
+            (admin) -> {
+              if (!admin.getLoginId().equals(payload.getLoginId())) {
+                if (this.adminRepository.existsByLoginIdAndDeletedIsFalseAndRoleDeletedIsFalse(
+                    payload.getLoginId())) {
                   throw new BusinessException(ExceptionCode.FAIL_ALREADY_EXISTS_LOGIN_ID);
                 }
               }
-              return new AdminDTO(item.change(payload));
+              return new AdminDTO(admin.change(payload));
             })
         .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NO_DATA_SUCCESS));
   }
@@ -72,9 +74,19 @@ public class AdminService {
     return this.adminRepository
         .findById(id)
         .map(
-            (item) -> {
-              return new AdminDTO(item.changePassword(password));
+            (admin) -> {
+              if (this.passwordEncoder.matches(password, admin.getPassword())) {
+                throw new BusinessException(ExceptionCode.FAIL_SAME_PASSWORD);
+              }
+              return new AdminDTO(admin.changePassword(password));
             })
+        .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NO_DATA_SUCCESS));
+  }
+
+  public AdminDTO remove(final Long id) {
+    return this.adminRepository
+        .findById(id)
+        .map(admin -> new AdminDTO(admin.remove()))
         .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NO_DATA_SUCCESS));
   }
 }

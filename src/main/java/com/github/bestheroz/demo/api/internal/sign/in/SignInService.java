@@ -31,14 +31,14 @@ public class SignInService implements UserDetailsService {
       throw new UsernameNotFoundException("No user found");
     }
     return this.adminRepository
-        .findByLoginId(loginId)
+        .findByLoginIdAndDeletedIsFalseAndRoleDeletedIsFalse(loginId)
         .map(CustomUserDetails::new)
         .orElseThrow(() -> new UsernameNotFoundException("No user found by `" + loginId + "`"));
   }
 
   public TokenDTO signIn(final String loginId, final String password) {
     return this.adminRepository
-        .findByLoginId(loginId)
+        .findByLoginIdAndDeletedIsFalseAndRoleDeletedIsFalse(loginId)
         .map(
             admin -> {
               // 1. 역할 체크
@@ -62,6 +62,7 @@ public class SignInService implements UserDetailsService {
                   || admin.getExpired().toEpochMilli() < Instant.now().toEpochMilli()) {
                 throw new BusinessException(ExceptionCode.FAIL_SIGN_IN_CLOSED);
               }
+
               admin.resetSignInFailCnt();
               final CustomUserDetails customUserDetails = new CustomUserDetails(admin);
               final String accessToken = JwtTokenProvider.createAccessToken(customUserDetails);

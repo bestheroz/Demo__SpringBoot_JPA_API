@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AdminRepositoryImpl implements AdminRepositoryCustom {
+
   private final JPAQueryFactory jpaQueryFactory;
   private static final QAdmin admin = QAdmin.admin;
 
@@ -38,9 +39,16 @@ public class AdminRepositoryImpl implements AdminRepositoryCustom {
       builder.and(admin.role.id.ne(1L));
     }
 
-    // 검색조건 (사용자ID , 사용자명)
     if (StringUtils.isNotEmpty(search)) {
-      builder.and(admin.loginId.contains(search).or(admin.name.contains(search)));
+      if (StringUtils.isNumeric(search)) {
+        builder.and(
+            admin
+                .id
+                .eq(Long.valueOf(search))
+                .or(admin.loginId.contains(search).or(admin.name.contains(search))));
+      } else {
+        builder.and(admin.loginId.contains(search).or(admin.name.contains(search)));
+      }
     }
 
     // 필터조건 (권한)
@@ -52,6 +60,11 @@ public class AdminRepositoryImpl implements AdminRepositoryCustom {
     if (availableList != null && availableList.size() > 0) {
       builder.and(admin.available.in(availableList));
     }
+
+    // 삭제조건
+    builder.and(admin.deleted.eq(false));
+
+    builder.and(admin.role.deleted.eq(false));
 
     return new PageImpl<>(
         this.jpaQueryFactory

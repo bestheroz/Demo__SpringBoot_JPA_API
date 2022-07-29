@@ -1,5 +1,6 @@
 package com.github.bestheroz.demo.api.internal.role;
 
+import com.github.bestheroz.demo.api.internal.role.menu.RoleMenuService;
 import com.github.bestheroz.demo.domain.Role;
 import com.github.bestheroz.demo.helper.recursive.RecursiveEntityHelper;
 import com.github.bestheroz.demo.repository.RoleRepository;
@@ -19,8 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class RoleService {
+
   private final EntityManager entityManager;
   private final RoleRepository roleRepository;
+  private final RoleMenuService roleMenuService;
 
   private Role persist(final Role role) {
     this.entityManager.persist(role);
@@ -34,7 +37,7 @@ public class RoleService {
   @Transactional(readOnly = true)
   public List<RoleChildrenDTO> getItems() {
     return this.roleRepository
-        .findAllByParentIdNullOrderByDisplayOrderAsc()
+        .findAllByParentIdNullAndDeletedIsFalseOrderByDisplayOrderAsc()
         .map(RoleChildrenDTO::new)
         .toList();
   }
@@ -99,5 +102,11 @@ public class RoleService {
               return new RoleSimpleDTO(role);
             })
         .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NO_DATA_SUCCESS));
+  }
+
+  public Set<Long> delete(final Long id) {
+    final Set<Long> roleIdList = this.getFlatRoleIdsByIdWithRecursiveChildren(id);
+    this.roleRepository.updateRoleDeletedToTrueByRoleId(roleIdList);
+    return this.roleMenuService.deletedRoleMenuMap(roleIdList);
   }
 }

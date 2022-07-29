@@ -2,62 +2,29 @@ package com.github.bestheroz.standard.common.util;
 
 import com.github.bestheroz.standard.common.exception.BusinessException;
 import com.github.bestheroz.standard.common.exception.ExceptionCode;
-import com.github.bestheroz.standard.context.init.StaticConfig;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
-import org.springframework.util.DigestUtils;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @UtilityClass
 @Slf4j
 public class FileUtils {
-
-  private final String FILE_ROOT_PATH = "/files/";
-  private final String STR_DOT = ".";
-  private final String STR_INFO_MESSAGE = "Target for uploading file : {}";
-  private final String STR_UNDERLINE = "_";
   private final Tika TIKA_INSTANCE = new Tika();
 
-  private File getRootPath() {
-    if (StaticConfig.LOCAL_ACTIVE_PROFILE_FLAG) {
-      return org.apache.commons.io.FileUtils.getTempDirectory();
-    } else {
-      return org.apache.commons.io.FileUtils.getFile(FILE_ROOT_PATH);
-    }
-  }
-
-  public void delete(final File file) {
-    try {
-      org.apache.commons.io.FileUtils.forceDelete(file);
-      log.info("file deleted : {}", file.getAbsolutePath());
-    } catch (final IOException e) {
-      log.warn(LogUtils.getStackTrace(e));
-      throw new BusinessException(e);
-    }
-  }
-
-  public void delete(final String filePath) {
-    delete(getFile(filePath));
+  public File getTempDirectory() {
+    return org.apache.commons.io.FileUtils.getTempDirectory();
   }
 
   public String getEncodedFileName(final HttpServletRequest request, final String fileName) {
@@ -99,73 +66,6 @@ public class FileUtils {
       log.warn(LogUtils.getStackTrace(e));
       throw new BusinessException(e);
     }
-  }
-
-  public File getFile(final String filePath) {
-    return org.apache.commons.io.FileUtils.getFile(getRootPath(), filePath);
-  }
-
-  public File getFile(final String dirPath, final String filePath) {
-    return org.apache.commons.io.FileUtils.getFile(mkdirIfNotExist(dirPath), filePath);
-  }
-
-  private File mkdirIfNotExist(final String dirPath) {
-    try {
-      org.apache.commons.io.FileUtils.forceMkdir(getFile(dirPath));
-      return getFile(dirPath);
-    } catch (final IOException e) {
-      log.warn(LogUtils.getStackTrace(e));
-      throw new BusinessException(e);
-    }
-  }
-
-  public String upload(
-      @NotNull final String targetDirPath, @NotNull final MultipartFile multipartFile) {
-    if (multipartFile == null) {
-      throw new BusinessException(ExceptionCode.ERROR_SYSTEM);
-    }
-    final File file = uploadMultipartFile(targetDirPath, multipartFile);
-    log.info(STR_INFO_MESSAGE, file.getAbsolutePath());
-    return StringUtils.remove(file.getAbsolutePath(), getRootPath().getAbsolutePath())
-        .replaceAll("\\\\", "/");
-  }
-
-  public List<String> uploadAll(
-      final String targetDirPath, final MultipartHttpServletRequest mRequest) {
-    final Map<String, MultipartFile> fileMap = mRequest.getFileMap();
-    if (NullUtils.size(fileMap) < 1) {
-      return List.of();
-    }
-    final List<String> result = new ArrayList<>();
-    final Iterator<String> fileNames = mRequest.getFileNames();
-    while (NullUtils.hasNext(fileNames)) {
-      final MultipartFile multipartFile = fileMap.get(fileNames.next());
-      result.add(upload(targetDirPath, multipartFile));
-    }
-    return result;
-  }
-
-  private File uploadMultipartFile(final String targetDirPath, final MultipartFile multipartFile) {
-    final StringBuilder fileName = new StringBuilder(80);
-    fileName
-        .append(DateUtils.toStringNow("yyyyMMddHHmmss"))
-        .append(STR_UNDERLINE)
-        .append(
-            DigestUtils.md5DigestAsHex(
-                Objects.requireNonNull(multipartFile.getOriginalFilename()).getBytes()));
-    final String extension = getExtension(multipartFile);
-    if (StringUtils.isNotEmpty(extension)) {
-      fileName.append(STR_DOT).append(extension);
-    }
-    validateFile(multipartFile);
-    final File file = getFile(targetDirPath, fileName.toString());
-    try {
-      FileCopyUtils.copy(multipartFile.getBytes(), file);
-    } catch (final IOException e) {
-      log.warn(LogUtils.getStackTrace(e));
-      throw new BusinessException(e);
-    }
-    return file;
   }
 
   // 업로드 하려는 파일의 검증(MultipartFile 이용)

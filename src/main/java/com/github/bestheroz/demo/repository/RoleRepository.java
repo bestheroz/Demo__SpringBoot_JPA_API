@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RoleRepository extends CrudRepository<Role, Long>, RoleRepositoryCustom {
-  Stream<Role> findAllByParentIdNullOrderByDisplayOrderAsc();
+  Stream<Role> findAllByParentIdNullAndDeletedIsFalseOrderByDisplayOrderAsc();
 
   Stream<Role> findAllById(Long id);
 

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "api/codes/")
 @RequiredArgsConstructor
 public class CodeController {
+
   private final CodeRepository codeRepository;
   private final CodeService codeService;
 

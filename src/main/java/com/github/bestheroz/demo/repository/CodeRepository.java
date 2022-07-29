@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CodeRepository extends CrudRepository<Code, Long>, CodeRepositoryCustom {
+
   Stream<Code> findAllByTypeOrderByDisplayOrderAsc(String type);
 
   List<CodeVO<String>> findCodeVOsByTypeAndAvailableOrderByDisplayOrder(

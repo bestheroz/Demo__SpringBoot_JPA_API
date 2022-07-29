@@ -34,6 +34,7 @@ public class AdminPasswordDTO {
         .available(this.available)
         .expired(this.expired)
         .signInFailCnt(0)
+        .deleted(false)
         .build();
   }
 }

@@ -57,7 +57,7 @@ public class MineService {
   public List<RoleChildrenDTO> getRoles(final Long id) {
     if (AuthenticationUtils.isSuperAdmin()) {
       return this.roleRepository
-          .findAllByParentIdNullOrderByDisplayOrderAsc()
+          .findAllByParentIdNullAndDeletedIsFalseOrderByDisplayOrderAsc()
           .map(RoleChildrenDTO::new)
           .toList();
     } else {
@@ -78,7 +78,6 @@ public class MineService {
 
   // 패스워드 검증 공통 함수
   public void verifyPassword(final String rawPassword, final String encodedPassword) {
-    // 패스워드가 틀리면
     if (!this.passwordEncoder.matches(rawPassword, encodedPassword)) {
       throw new BusinessException(ExceptionCode.FAIL_MATCH_PASSWORD);
     }
@@ -90,7 +89,10 @@ public class MineService {
             .findById(AuthenticationUtils.getId())
             .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN));
     this.verifyPassword(payload.getOldPassword(), admin.getPassword());
-    admin.changePassword(payload.getNewPassword());
+    if (this.passwordEncoder.matches(payload.getNewPassword(), admin.getPassword())) {
+      throw new BusinessException(ExceptionCode.FAIL_SAME_PASSWORD);
+    }
+    admin.changePassword(this.passwordEncoder.encode(payload.getNewPassword()));
   }
 
   public MineConfigDTO changeConfig(final MineConfigDTO payload) {

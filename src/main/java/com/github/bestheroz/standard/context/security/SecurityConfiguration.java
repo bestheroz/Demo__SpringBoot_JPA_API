@@ -57,6 +57,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     configuration.addAllowedOrigin("http://localhost:8082");
     configuration.addAllowedOrigin("http://127.0.0.1:8081");
     configuration.addAllowedOrigin("http://127.0.0.1:8082");
+    configuration.addAllowedOrigin("https://admin-sandbox.github.bestheroz.io/");
+    configuration.addAllowedOrigin("https://admin-qa.github.bestheroz.io/");
+    configuration.addAllowedOrigin("https://admin-prod.github.bestheroz.io/");
     configuration.addAllowedHeader("*");
     configuration.addAllowedMethod("*");
     configuration.setAllowCredentials(true);

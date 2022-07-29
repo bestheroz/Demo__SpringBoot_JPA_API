@@ -41,10 +41,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Builder
 @Entity(name = "role_menu_map")
+@EntityListeners(AuditingEntityListener.class)
 @TypeDef(name = "jsonString", typeClass = JsonStringType.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@EntityListeners(AuditingEntityListener.class)
 public class RoleMenuMap extends RecursiveEntity<RoleMenuMap, RoleMenuChildrenDTO>
     implements Serializable {
   @Serial private static final long serialVersionUID = -4753709861734048435L;
@@ -76,10 +76,6 @@ public class RoleMenuMap extends RecursiveEntity<RoleMenuMap, RoleMenuChildrenDT
 
   private Integer displayOrder;
 
-  @Type(type = "jsonString")
-  @Builder.Default
-  private final Set<RoleAuthorityType> authoritiesJson = new HashSet<>();
-
   @Column(updatable = false)
   @CreatedBy
   protected Long createdBy;
@@ -91,6 +87,10 @@ public class RoleMenuMap extends RecursiveEntity<RoleMenuMap, RoleMenuChildrenDT
   protected Instant created;
 
   @LastModifiedDate protected Instant updated;
+
+  @Type(type = "jsonString")
+  @Builder.Default
+  private final Set<RoleAuthorityType> authoritiesJson = new HashSet<>();
 
   @Override
   public RoleMenuMap change(final RoleMenuChildrenDTO dto, final RoleMenuMap parent) {

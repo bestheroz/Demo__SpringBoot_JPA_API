@@ -1,11 +1,13 @@
 package com.github.bestheroz.standard.common.exception;
 
 import java.text.MessageFormat;
+import lombok.Getter;
 
+@Getter
 public enum ExceptionCode {
   SUCCESS_NORMAL("S000", "성공"),
 
-  ERROR_SYSTEM("E000", "시스템에러"),
+  ERROR_SYSTEM("E000", "이용에 불편을 드려 죄송합니다.\n요청하신 페이지에 오류가 발생하였습니다.\n잠시후에 다시 시도해 주세요."),
 
   ERROR_FILE_NOT_FOUND("E001", "파일이 존재하지 않습니다."),
 
@@ -13,7 +15,7 @@ public enum ExceptionCode {
 
   FAIL_INVALID_PARAMETER("F001", "올바르지 않은 파라미터"),
 
-  FAIL_NOT_ALLOWED_ADMIN("F002", "허용되지 않는 관리자"),
+  FAIL_NOT_ALLOWED_ADMIN("F002", "허용되지 않는 사용자"),
 
   FAIL_SIGN_IN_CLOSED("F003", "계정 차단"),
 
@@ -55,7 +57,9 @@ public enum ExceptionCode {
 
   FAIL_MATCH_PASSWORD("F022", "비밀번호가 올바르지 않습니다."),
 
-  FAIL_ALREADY_EXISTS_LOGIN_ID("F023", "이미 존재하는 Admin ID 입니다.");
+  FAIL_ALREADY_EXISTS_LOGIN_ID("F023", "이미 존재하는 Admin ID 입니다."),
+
+  FAIL_SAME_PASSWORD("F024", "이전 비밀번호와 동일합니다.");
 
   private final String code;
   private final String message;
@@ -63,14 +67,6 @@ public enum ExceptionCode {
   ExceptionCode(final String code, final String message) {
     this.code = code;
     this.message = message;
-  }
-
-  public String getCode() {
-    return this.code;
-  }
-
-  public String getMessage() {
-    return this.message;
   }
 
   @Override

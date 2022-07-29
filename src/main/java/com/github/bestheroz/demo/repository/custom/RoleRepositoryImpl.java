@@ -3,8 +3,10 @@ package com.github.bestheroz.demo.repository.custom;
 import com.github.bestheroz.demo.domain.QRole;
 import com.github.bestheroz.demo.domain.Role;
 import com.github.bestheroz.standard.common.exception.BusinessException;
+import com.github.bestheroz.standard.common.util.AuthenticationUtils;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +29,18 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
     if (available != null) {
       builder.and(role.available.eq(available));
     }
-
+    builder.and(role.deleted.eq(false));
     return this.jpaQueryFactory.selectFrom(role).where(builder).stream();
+  }
+
+  @Override
+  public void updateRoleDeletedToTrueByRoleId(final Set<Long> roleIds) {
+    this.jpaQueryFactory
+        .update(role)
+        .set(role.deleted, true)
+        .set(role.updatedBy, AuthenticationUtils.getId())
+        .set(role.updated, Instant.now())
+        .where(role.id.in(roleIds))
+        .execute();
   }
 }

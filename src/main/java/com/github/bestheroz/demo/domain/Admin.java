@@ -29,13 +29,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Admin implements Serializable {
+
   @Serial private static final long serialVersionUID = 7280716056600887400L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(unique = true)
   private String loginId;
 
   private String password;
@@ -48,6 +48,7 @@ public class Admin implements Serializable {
   private Boolean available;
   private String token;
   private Instant expired;
+  private Boolean deleted;
 
   @CreatedBy
   @Column(updatable = false)
@@ -99,6 +100,14 @@ public class Admin implements Serializable {
     this.role = dto.getRole().toRole();
     this.available = dto.getAvailable();
     this.expired = dto.getExpired();
+    this.updated = Instant.now();
+    this.updatedBy = AuthenticationUtils.getId();
+    return this;
+  }
+
+  public Admin remove() {
+    this.available = false;
+    this.deleted = true;
     this.updated = Instant.now();
     this.updatedBy = AuthenticationUtils.getId();
     return this;

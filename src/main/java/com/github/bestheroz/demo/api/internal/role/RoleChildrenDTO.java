@@ -36,7 +36,11 @@ public class RoleChildrenDTO extends RecursiveDTO<RoleChildrenDTO, Role> {
     this.name = role.getName();
     this.available = role.getAvailable();
     if (NullUtils.isNotEmpty(role.getChildren())) {
-      this.children.addAll(role.getChildren().stream().map(RoleChildrenDTO::new).toList());
+      this.children.addAll(
+          role.getChildren().stream()
+              .filter((e) -> !e.getDeleted())
+              .map(RoleChildrenDTO::new)
+              .toList());
     }
     this.created = role.getCreated();
     this.createdBy = role.getCreatedBy();
@@ -52,6 +56,7 @@ public class RoleChildrenDTO extends RecursiveDTO<RoleChildrenDTO, Role> {
             .available(this.available)
             .parent(parent)
             .displayOrder(999_999)
+            .deleted(false)
             .build();
 
     build.getChildren().addAll(this.children.stream().map(child -> child.toRole(build)).toList());

@@ -61,7 +61,8 @@ public class RoleSimpleDTO {
             .name(this.name)
             .available(this.available)
             .children(children)
-            .displayOrder(displayOrder);
+            .displayOrder(displayOrder)
+            .deleted(false);
     if (Objects.nonNull(parentId)) {
       roleBuilder.parent(new RoleSimpleDTO(parentId).toRole());
     }

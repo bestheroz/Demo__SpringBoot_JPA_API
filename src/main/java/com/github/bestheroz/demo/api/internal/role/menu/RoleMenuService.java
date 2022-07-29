@@ -4,6 +4,7 @@ import com.github.bestheroz.demo.domain.RoleMenuMap;
 import com.github.bestheroz.demo.helper.recursive.RecursiveEntityHelper;
 import com.github.bestheroz.demo.repository.RoleMenuMapRepository;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,5 +49,10 @@ public class RoleMenuService {
         .saveAll(entities, dtos, this.entityManager, null, roleId)
         .map(RoleMenuChildrenDTO::new)
         .toList();
+  }
+
+  public Set<Long> deletedRoleMenuMap(final Set<Long> ids) {
+    this.roleMenuMapRepository.deleteByRoleIdIn(ids);
+    return ids;
   }
 }
