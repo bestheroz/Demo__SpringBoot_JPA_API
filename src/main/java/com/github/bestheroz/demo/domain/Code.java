@@ -28,8 +28,10 @@ public class Code extends BaseAuditEntity implements Serializable {
   private Long id;
 
   private String type;
-  @Column(name ="`value`")
+
+  @Column(name = "`value`")
   private String value;
+
   private String text;
   private Boolean available;
   private Integer displayOrder;
