@@ -50,7 +50,7 @@ jobs:
             {
               attachments: [{
                 color: 'good',
-                text: `<https://google.com|:factory:*Argo CD*>\n${{matrix.java-version}}`,
+                text: `<https://google.com|:factory:*Argo CD*>`,
               }]
             }
         if: success()
