@@ -38,7 +38,8 @@ jobs:
       - uses: 8398a7/action-slack@v3
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          MATRIX_CONTEXT: ${{ toJson(matrix) }}
         with:
           status: ${{ job.status }}
-          fields: repo,message,job,author,workflow,took
+          fields: repo,workflow,message,job,author,took
         if: always()
