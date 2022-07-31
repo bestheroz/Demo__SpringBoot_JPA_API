@@ -41,16 +41,3 @@ jobs:
           status: ${{ job.status }}
           fields: repo,message,commit,author,workflow,took
         if: always()
-      - uses: 8398a7/action-slack@v3
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        with:
-          status: custom
-          custom_payload: |
-            {
-              attachments: [{
-                color: 'good',
-                text: `<https://google.com|:factory:*Argo CD*>`,
-              }]
-            }
-        if: success()
