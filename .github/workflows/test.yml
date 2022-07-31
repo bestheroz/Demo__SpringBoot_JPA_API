@@ -40,5 +40,5 @@ jobs:
           MATRIX_CONTEXT: ${{ toJson(matrix) }}
         with:
           status: ${{ job.status }}
-          fields: repo,workflow,message,job,author,took
+          fields: ref,repo,workflow,message,job,author,took
         if: always()
