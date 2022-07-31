@@ -40,5 +40,5 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:
           status: ${{ job.status }}
-          fields: repo,message,commit,author,workflow,took
+          fields: repo,message,job,author,workflow,took
         if: always()
