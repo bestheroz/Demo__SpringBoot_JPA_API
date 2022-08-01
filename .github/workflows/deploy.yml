@@ -7,8 +7,6 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ${{ matrix.os }}
-    env:
-      CI: true
 
     strategy:
       matrix:

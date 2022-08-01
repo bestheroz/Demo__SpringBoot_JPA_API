@@ -6,8 +6,6 @@ on: push
 jobs:
   test:
     runs-on: ${{ matrix.os }}
-    env:
-      CI: true
 
     strategy:
       matrix:
