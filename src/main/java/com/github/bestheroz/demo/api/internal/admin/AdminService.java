@@ -78,7 +78,7 @@ public class AdminService {
               if (this.passwordEncoder.matches(password, admin.getPassword())) {
                 throw new BusinessException(ExceptionCode.FAIL_SAME_PASSWORD);
               }
-              return new AdminDTO(admin.changePassword(password));
+              return new AdminDTO(admin.changePassword(this.passwordEncoder.encode(password)));
             })
         .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NO_DATA_SUCCESS));
   }
