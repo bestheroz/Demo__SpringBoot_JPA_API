@@ -40,4 +40,5 @@ jobs:
         with:
           status: ${{ job.status }}
           fields: repo,workflow,message,author,took,ref
+          author_name: ''
         if: always()
