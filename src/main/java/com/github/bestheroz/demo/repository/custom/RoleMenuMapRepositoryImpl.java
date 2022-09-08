@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class RoleMenuMapRepositoryImpl implements RoleMenuMapRepositoryCustom {
+
   private final JPAQueryFactory jpaQueryFactory;
 
   private static final QRoleMenuMap roleMenuMap = QRoleMenuMap.roleMenuMap;

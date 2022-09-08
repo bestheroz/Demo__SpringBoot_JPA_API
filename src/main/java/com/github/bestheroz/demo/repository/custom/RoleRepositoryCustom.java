@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RoleRepositoryCustom {
-  Stream<Role> getAllByIdInAndAvailable(final Set<Long> ids, final Boolean available)
+  Stream<Role> getAllByIdInAndAvailable(final Set<Long> ids, final Boolean availableFlag)
       throws BusinessException;
 
   void updateRoleDeletedToTrueByRoleId(Set<Long> roleIds);

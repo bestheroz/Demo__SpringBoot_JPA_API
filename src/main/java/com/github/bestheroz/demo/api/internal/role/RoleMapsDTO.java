@@ -19,7 +19,7 @@ public class RoleMapsDTO {
 
   @NotEmpty private String name;
 
-  @NotNull private Boolean available;
+  @NotNull private Boolean availableFlag;
 
   @NotNull private final List<RoleMenuChildrenDTO> maps = new ArrayList<>();
 
@@ -32,7 +32,7 @@ public class RoleMapsDTO {
   public RoleMapsDTO(final Role role) {
     this.id = role.getId();
     this.name = role.getName();
-    this.available = role.getAvailable();
+    this.availableFlag = role.getAvailableFlag();
     if (NullUtils.isNotEmpty(role.getMaps())) {
       this.maps.addAll(
           role.getMaps().stream()

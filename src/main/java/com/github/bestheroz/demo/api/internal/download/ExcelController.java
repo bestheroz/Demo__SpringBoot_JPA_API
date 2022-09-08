@@ -44,7 +44,8 @@ public class ExcelController {
     AbstractExcelXView.addHeader(
         excelVOList, "권한", "role.name", ExcelService.CellType.STRING_CENTER);
     AbstractExcelXView.addHeader(excelVOList, "만료일", "expired", ExcelService.CellType.DATE);
-    AbstractExcelXView.addHeader(excelVOList, "사용 가능", "available", ExcelService.CellType.STRING);
+    AbstractExcelXView.addHeader(
+        excelVOList, "사용 가능", "availableFlag", ExcelService.CellType.STRING);
 
     // excel maker
     this.excelMaker(

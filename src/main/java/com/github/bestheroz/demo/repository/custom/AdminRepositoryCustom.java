@@ -10,8 +10,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AdminRepositoryCustom {
+
   Page<AdminDTO> getAllByPaginationAndSearch(
-      String search, List<Boolean> availableList, List<Long> roleIdList, Pageable pageable);
+      String search, List<Boolean> availableFlagList, List<Long> roleIdList, Pageable pageable);
 
   List<CodeVO<Long>> getCodeVOs() throws BusinessException;
 }

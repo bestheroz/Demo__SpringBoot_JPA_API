@@ -14,10 +14,10 @@ public class CodeRepositoryImpl implements CodeRepositoryCustom {
   private static final QCode code = QCode.code;
 
   @Override
-  public List<String> getTypesByAvailable(final Boolean available) {
+  public List<String> getTypesByAvailableFlag(final Boolean availableFlag) {
     final BooleanBuilder builder = new BooleanBuilder();
-    if (available != null) {
-      builder.and(code.available.eq(available));
+    if (availableFlag != null) {
+      builder.and(code.availableFlag.eq(availableFlag));
     }
     return this.jpaQueryFactory
         .select(code.type)

@@ -19,6 +19,7 @@ import org.springframework.web.util.UrlPathHelper;
 
 @Slf4j
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
+
   private static final String REQUEST_COMPLETE_EXECUTE_TIME =
       "{} ....... Request Complete Execute Time ....... : {}";
   private static final String REQUEST_PARAMETERS = "<{}>{}";
@@ -32,7 +33,12 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
       final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain)
       throws IOException, ServletException {
     final String requestURI = new UrlPathHelper().getPathWithinApplication(request);
-    log.info(REQUEST_PARAMETERS, request.getMethod(), requestURI);
+    if (requestURI.equals("/")) {
+      (response).sendError(HttpServletResponse.SC_FORBIDDEN);
+      return;
+    } else if (!requestURI.startsWith("/api/v1/health/")) {
+      log.info(REQUEST_PARAMETERS, request.getMethod(), requestURI);
+    }
     final StopWatch stopWatch = new StopWatch();
     stopWatch.start();
 
@@ -66,6 +72,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     }
     chain.doFilter(request, response);
     stopWatch.stop();
-    log.info(REQUEST_COMPLETE_EXECUTE_TIME, requestURI, stopWatch);
+    if (!requestURI.startsWith("/api/v1/health/")) {
+      log.info(REQUEST_COMPLETE_EXECUTE_TIME, requestURI, stopWatch);
+    }
   }
 }

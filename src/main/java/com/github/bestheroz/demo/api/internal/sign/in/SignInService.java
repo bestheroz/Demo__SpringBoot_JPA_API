@@ -42,7 +42,7 @@ public class SignInService implements UserDetailsService {
         .map(
             admin -> {
               // 1. 역할 체크
-              if (!admin.getRole().getAvailable()) {
+              if (!admin.getRole().getAvailableFlag()) {
                 throw new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN);
               }
 
@@ -58,7 +58,7 @@ public class SignInService implements UserDetailsService {
               }
 
               // 4. 계정 차단된 상태인가
-              if (!admin.getAvailable()
+              if (!admin.getAvailableFlag()
                   || admin.getExpired().toEpochMilli() < Instant.now().toEpochMilli()) {
                 throw new BusinessException(ExceptionCode.FAIL_SIGN_IN_CLOSED);
               }

@@ -25,8 +25,8 @@ public class RoleController {
 
   @GetMapping(value = "selections/")
   public ResponseEntity<ApiResult<List<RoleSimpleDTO>>> getSelections(
-      @RequestParam(required = false) final Boolean available) {
-    return Result.ok(this.roleService.getSelections(available));
+      @RequestParam(required = false) final Boolean availableFlag) {
+    return Result.ok(this.roleService.getSelections(availableFlag));
   }
 
   @GetMapping

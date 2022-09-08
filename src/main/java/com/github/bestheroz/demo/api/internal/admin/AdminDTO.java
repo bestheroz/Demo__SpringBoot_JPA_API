@@ -11,11 +11,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AdminDTO {
+
   private Long id;
   private String loginId;
   private String name;
   @NotNull private RoleSimpleDTO role;
-  private Boolean available;
+  private Boolean availableFlag;
   private Instant expired;
 
   private Long createdBy;
@@ -29,7 +30,7 @@ public class AdminDTO {
     this.loginId = admin.getLoginId();
     this.name = admin.getName();
     this.role = new RoleSimpleDTO(admin.getRole());
-    this.available = admin.getAvailable();
+    this.availableFlag = admin.getAvailableFlag();
     this.expired = admin.getExpired();
     this.created = admin.getCreated();
     this.createdBy = admin.getCreatedBy();

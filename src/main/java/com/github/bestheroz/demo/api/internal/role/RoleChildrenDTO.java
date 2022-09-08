@@ -21,7 +21,7 @@ public class RoleChildrenDTO extends RecursiveDTO<RoleChildrenDTO, Role> {
 
   @NotEmpty private String name;
 
-  @NotNull private Boolean available;
+  @NotNull private Boolean availableFlag;
 
   @NotNull private final List<RoleChildrenDTO> children = new ArrayList<>();
 
@@ -34,7 +34,7 @@ public class RoleChildrenDTO extends RecursiveDTO<RoleChildrenDTO, Role> {
   public RoleChildrenDTO(final Role role) {
     this.id = role.getId();
     this.name = role.getName();
-    this.available = role.getAvailable();
+    this.availableFlag = role.getAvailableFlag();
     if (NullUtils.isNotEmpty(role.getChildren())) {
       this.children.addAll(
           role.getChildren().stream()
@@ -53,7 +53,7 @@ public class RoleChildrenDTO extends RecursiveDTO<RoleChildrenDTO, Role> {
         Role.builder()
             .id(this.id)
             .name(this.name)
-            .available(this.available)
+            .availableFlag(this.availableFlag)
             .parent(parent)
             .displayOrder(999_999)
             .deleted(false)

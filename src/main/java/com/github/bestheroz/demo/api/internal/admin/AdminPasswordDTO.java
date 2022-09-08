@@ -16,7 +16,7 @@ public class AdminPasswordDTO {
   private String name;
   private String password;
   @NotNull private RoleSimpleDTO role;
-  private Boolean available;
+  private Boolean availableFlag;
   private Instant expired;
 
   private Long createdBy;
@@ -31,7 +31,7 @@ public class AdminPasswordDTO {
         .name(this.name)
         .password(this.password)
         .role(this.role.toRole())
-        .available(this.available)
+        .availableFlag(this.availableFlag)
         .expired(this.expired)
         .signInFailCnt(0)
         .deleted(false)

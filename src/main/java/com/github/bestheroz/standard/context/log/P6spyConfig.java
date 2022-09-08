@@ -12,12 +12,14 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class P6spyConfig {
+
   @PostConstruct
   public void setLogMessageFormat() {
     P6SpyOptions.getActiveInstance().setLogMessageFormat(P6spyPrettySqlFormatter.class.getName());
   }
 
   public static class P6spyPrettySqlFormatter implements MessageFormattingStrategy {
+
     @Override
     public String formatMessage(
         final int connectionId,
@@ -27,28 +29,31 @@ public class P6spyConfig {
         final String prepared,
         final String sql,
         final String url) {
-      return MessageFormat.format(
-          "OperationTime: {0}ms | connectionId : {1} | {2}{3}\n",
-          elapsed,
-          connectionId,
-          category,
-          StringUtils.isEmpty(sql) ? "" : "\n" + this.formatSql(category, sql));
+      if (StringUtils.equals(sql, "select now()")) {
+        return MessageFormat.format(
+            "OperationTime: {0}ms | connectionId : {1} | {2} | readiness: {3}",
+            elapsed, connectionId, category, sql);
+      } else {
+        return MessageFormat.format(
+            "OperationTime: {0}ms | connectionId : {1} | {2}{3}\n",
+            elapsed,
+            connectionId,
+            category,
+            StringUtils.isEmpty(sql) ? "" : "\n" + this.formatSql(category, sql));
+      }
     }
 
     private String formatSql(final String category, final String sql) {
       if (StringUtils.isEmpty(sql)) {
         return StringUtils.EMPTY;
       }
-
       if (Category.STATEMENT.getName().equals(category)) {
         if (StaticConfig.LOCAL_ACTIVE_PROFILE_FLAG) {
-          if (sql.startsWith("create") || sql.startsWith("alter") || sql.startsWith("comment")) {
-            return FormatStyle.DDL.getFormatter().format(sql);
-          } else {
-            return FormatStyle.HIGHLIGHT
-                .getFormatter()
-                .format(FormatStyle.BASIC.getFormatter().format(sql));
-          }
+          return StringUtils.startsWithAny("create", "alter", "comment")
+              ? FormatStyle.DDL.getFormatter().format(sql)
+              : FormatStyle.HIGHLIGHT
+                  .getFormatter()
+                  .format(FormatStyle.BASIC.getFormatter().format(sql));
         }
       }
       return sql;

@@ -58,7 +58,11 @@ public class Role extends RecursiveEntity<Role, RoleChildrenDTO> implements Seri
   @Builder.Default
   private final List<Role> children = new ArrayList<>();
 
-  @OneToMany(mappedBy = "role", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+  @OneToMany(
+      mappedBy = "role",
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      orphanRemoval = true)
   @OrderBy("displayOrder ASC")
   @Builder.Default
   private final List<RoleMenuMap> maps = new ArrayList<>();
@@ -68,7 +72,7 @@ public class Role extends RecursiveEntity<Role, RoleChildrenDTO> implements Seri
   private final List<Admin> admins = new ArrayList<>();
 
   private String name;
-  private Boolean available;
+  private Boolean availableFlag;
   private Integer displayOrder;
 
   @Column(updatable = false)
@@ -87,7 +91,7 @@ public class Role extends RecursiveEntity<Role, RoleChildrenDTO> implements Seri
 
   public void change(final RoleSimpleDTO dto) {
     this.name = dto.getName();
-    this.available = dto.getAvailable();
+    this.availableFlag = dto.getAvailableFlag();
     this.updatedBy = AuthenticationUtils.getId();
     this.updated = Instant.now();
   }
@@ -95,7 +99,7 @@ public class Role extends RecursiveEntity<Role, RoleChildrenDTO> implements Seri
   @Override
   public Role change(final RoleChildrenDTO dto, final Role parent) {
     this.name = dto.getName();
-    this.available = dto.getAvailable();
+    this.availableFlag = dto.getAvailableFlag();
     this.parent = parent;
 
     final List<RoleChildrenDTO> childrenDTOs = dto.getChildren();

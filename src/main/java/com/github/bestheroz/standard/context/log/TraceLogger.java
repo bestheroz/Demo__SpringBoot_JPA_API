@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class TraceLogger {
+
   private static final String STR_START_EXECUTE_TIME = "{} START .......";
   private static final String STR_END_EXECUTE_TIME = "{} E N D [{}ms] - return: {}";
   private static final String STR_END_EXECUTE_TIME_FOR_REPOSITORY = "{} E N D [{}ms]";
@@ -35,23 +36,29 @@ public class TraceLogger {
     final StopWatch stopWatch = new StopWatch();
     stopWatch.start();
     try {
-      log.info(STR_START_EXECUTE_TIME, signature);
+      if (!StringUtils.containsAny(signature, "HealthController", "HealthRepository")) {
+        log.info(STR_START_EXECUTE_TIME, signature);
+      }
 
       retVal = pjp.proceed();
 
       stopWatch.stop();
-      if (StringUtils.containsAny(signature, "Repository.", "RepositoryCustom.")) {
-        log.info(STR_END_EXECUTE_TIME_FOR_REPOSITORY, signature, stopWatch.getTime());
+      if (StringUtils.containsAny(signature, "Repository.", "RepositoryCustom.", ".domain.")) {
+        if (!StringUtils.containsAny(signature, "HealthRepository")) {
+          log.info(STR_END_EXECUTE_TIME_FOR_REPOSITORY, signature, stopWatch.getTime());
+        }
       } else {
-        final String str = MapperUtils.toString(retVal);
-        log.info(
-            STR_END_EXECUTE_TIME,
-            signature,
-            stopWatch.getTime(),
-            StringUtils.abbreviate(
-                StringUtils.defaultString(str, "null"),
-                "--skip massive text-- total length : " + StringUtils.length(str),
-                1000));
+        if (!StringUtils.containsAny(signature, "HealthController")) {
+          final String str = MapperUtils.toString(retVal);
+          log.info(
+              STR_END_EXECUTE_TIME,
+              signature,
+              stopWatch.getTime(),
+              StringUtils.abbreviate(
+                  StringUtils.defaultString(str, "null"),
+                  "--skip massive text-- total length : " + StringUtils.length(str),
+                  1000));
+        }
       }
     } catch (final Throwable e) {
       if (stopWatch.isStarted()) {

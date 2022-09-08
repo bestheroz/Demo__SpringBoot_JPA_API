@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class MenuService {
+
   private final EntityManager entityManager;
 
   private final MenuRepository menuRepository;

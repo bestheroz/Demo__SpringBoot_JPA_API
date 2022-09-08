@@ -79,7 +79,7 @@ public class RoleService {
   }
 
   @Transactional(readOnly = true)
-  public List<RoleSimpleDTO> getSelections(final Boolean available) {
+  public List<RoleSimpleDTO> getSelections(final Boolean availableFlag) {
     final Set<Long> ids;
     if (AuthenticationUtils.isSuperAdmin()) {
       ids = null;
@@ -87,7 +87,7 @@ public class RoleService {
       ids = this.getFlatRoleIdsByIdWithRecursiveChildren(AuthenticationUtils.getRoleId());
     }
     return this.roleRepository
-        .getAllByIdInAndAvailable(ids, available)
+        .getAllByIdInAndAvailable(ids, availableFlag)
         .map(RoleSimpleDTO::new)
         .toList();
   }

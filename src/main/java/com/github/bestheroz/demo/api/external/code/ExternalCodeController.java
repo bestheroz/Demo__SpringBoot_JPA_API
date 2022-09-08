@@ -28,7 +28,7 @@ public class ExternalCodeController {
   @Operation(summary = "코드 타입 리스트 가져오기")
   @GetMapping("types/")
   ResponseEntity<ApiResult<List<String>>> getTypes() {
-    return Result.ok(this.codeRepository.getTypesByAvailable(true));
+    return Result.ok(this.codeRepository.getTypesByAvailableFlag(true));
   }
 
   @Operation(summary = "코드 타입을 통한 코드 리스트 가져오기")
@@ -37,6 +37,6 @@ public class ExternalCodeController {
       @Parameter(description = "코드타입", example = "EXAMPLE") @Valid @RequestParam(value = "type")
           final String type) {
     return Result.ok(
-        this.codeRepository.findCodeVOsByTypeAndAvailableOrderByDisplayOrder(type, true));
+        this.codeRepository.findCodeVOsByTypeAndAvailableFlagOrderByDisplayOrder(type, true));
   }
 }

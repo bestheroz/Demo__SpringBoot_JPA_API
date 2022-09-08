@@ -15,7 +15,7 @@ public class CodeDTO {
   @NotEmpty private String type;
   @NotEmpty private String value;
   @NotEmpty private String text;
-  @NotNull private Boolean available;
+  @NotNull private Boolean availableFlag;
   @NotNull private Integer displayOrder;
 
   private Long createdBy;
@@ -29,7 +29,7 @@ public class CodeDTO {
     this.type = code.getType();
     this.value = code.getValue();
     this.text = code.getText();
-    this.available = code.getAvailable();
+    this.availableFlag = code.getAvailableFlag();
     this.displayOrder = code.getDisplayOrder();
     this.created = code.getCreated();
     this.createdBy = code.getCreatedBy();
@@ -43,7 +43,7 @@ public class CodeDTO {
         .type(this.type)
         .value(this.value)
         .text(this.text)
-        .available(this.available)
+        .availableFlag(this.availableFlag)
         .displayOrder(this.displayOrder)
         .build();
   }

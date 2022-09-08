@@ -28,7 +28,7 @@ public class AdminRepositoryImpl implements AdminRepositoryCustom {
   @Override
   public Page<AdminDTO> getAllByPaginationAndSearch(
       final String search,
-      final List<Boolean> availableList,
+      final List<Boolean> availableFlagList,
       final List<Long> roleIdList,
       final Pageable pageable) {
 
@@ -51,14 +51,14 @@ public class AdminRepositoryImpl implements AdminRepositoryCustom {
       }
     }
 
-    // 필터조건 (권한)
+    //     필터조건 (권한)
     if (NullUtils.isNotEmpty(roleIdList)) {
       builder.and(admin.role.id.in(roleIdList));
     }
 
     // 필터조건 (사용유무)
-    if (availableList != null && availableList.size() > 0) {
-      builder.and(admin.available.in(availableList));
+    if (availableFlagList != null && availableFlagList.size() > 0) {
+      builder.and(admin.availableFlag.in(availableFlagList));
     }
 
     // 삭제조건

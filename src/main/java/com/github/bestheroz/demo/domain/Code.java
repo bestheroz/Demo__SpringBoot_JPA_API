@@ -31,16 +31,15 @@ public class Code extends BaseAuditEntity implements Serializable {
 
   @Column(name = "`value`")
   private String value;
-
   private String text;
-  private Boolean available;
+  private Boolean availableFlag;
   private Integer displayOrder;
 
   public void change(final CodeDTO dto) {
     this.type = dto.getType();
     this.value = dto.getValue();
     this.text = dto.getText();
-    this.available = dto.getAvailable();
+    this.availableFlag = dto.getAvailableFlag();
     this.displayOrder = dto.getDisplayOrder();
   }
 }

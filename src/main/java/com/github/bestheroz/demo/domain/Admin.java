@@ -45,7 +45,7 @@ public class Admin implements Serializable {
   private Role role;
 
   private Integer signInFailCnt;
-  private Boolean available;
+  private Boolean availableFlag;
   private String token;
   private Instant expired;
   private Boolean deleted;
@@ -98,7 +98,7 @@ public class Admin implements Serializable {
     this.loginId = dto.getLoginId();
     this.name = dto.getName();
     this.role = dto.getRole().toRole();
-    this.available = dto.getAvailable();
+    this.availableFlag = dto.getAvailableFlag();
     this.expired = dto.getExpired();
     this.updated = Instant.now();
     this.updatedBy = AuthenticationUtils.getId();
@@ -106,7 +106,7 @@ public class Admin implements Serializable {
   }
 
   public Admin remove() {
-    this.available = false;
+    this.availableFlag = false;
     this.deleted = true;
     this.updated = Instant.now();
     this.updatedBy = AuthenticationUtils.getId();

@@ -19,15 +19,15 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
   private static final QRole role = QRole.role;
 
   @Override
-  public Stream<Role> getAllByIdInAndAvailable(final Set<Long> ids, final Boolean available)
+  public Stream<Role> getAllByIdInAndAvailable(final Set<Long> ids, final Boolean availableFlag)
       throws BusinessException {
     final BooleanBuilder builder = new BooleanBuilder();
     if (ids != null) {
       builder.and(role.id.in(ids));
     }
 
-    if (available != null) {
-      builder.and(role.available.eq(available));
+    if (availableFlag != null) {
+      builder.and(role.availableFlag.eq(availableFlag));
     }
     builder.and(role.deleted.eq(false));
     return this.jpaQueryFactory.selectFrom(role).where(builder).stream();

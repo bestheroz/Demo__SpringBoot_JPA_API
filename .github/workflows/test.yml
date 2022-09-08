@@ -4,40 +4,30 @@ on: push
 #    branches-ignore: [main, RC/**]
 
 jobs:
-  test:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-        java-version: [ 17 ]
-
+  build-test:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
-      - uses: gradle/wrapper-validation-action@v1
 
-      - name: Set up JDK ${{ matrix.java-version }}
+      - name: Set up JDK 17
         uses: actions/setup-java@main
         with:
           distribution: 'temurin'
-          java-version: ${{ matrix.java-version }}
+          java-version: '17'
 
-      - name: Setup Gradle
+      - name: Build with Gradle
         uses: gradle/gradle-build-action@main
         with:
           gradle-version: wrapper
-          arguments: |
-            build
-            --no-daemon
-            --exclude-task test
-            -Dspring.profiles.active=dev
+          arguments: build --no-daemon -Dspring.profiles.active=prod
 
-      - uses: 8398a7/action-slack@v3
+      - name: send slack message
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,author,ref,workflow,took
+          author_name: ''
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           MATRIX_CONTEXT: ${{ toJson(matrix) }}
-        with:
-          status: ${{ job.status }}
-          fields: ref,repo,workflow,message,author,took
-          author_name: ''
-        if: always()
+        if: failure()

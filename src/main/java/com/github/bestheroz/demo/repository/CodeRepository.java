@@ -16,8 +16,8 @@ public interface CodeRepository extends CrudRepository<Code, Long>, CodeReposito
 
   Stream<Code> findAllByTypeOrderByDisplayOrderAsc(String type);
 
-  List<CodeVO<String>> findCodeVOsByTypeAndAvailableOrderByDisplayOrder(
-      String type, final Boolean available);
+  List<CodeVO<String>> findCodeVOsByTypeAndAvailableFlagOrderByDisplayOrder(
+      String type, final Boolean availableFlag);
 
   @Modifying
   @Query("update code c set c.displayOrder = :displayOrder where c.id = :id")

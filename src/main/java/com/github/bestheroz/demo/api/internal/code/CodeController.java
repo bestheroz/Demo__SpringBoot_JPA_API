@@ -31,8 +31,8 @@ public class CodeController {
 
   @GetMapping("types/")
   ResponseEntity<ApiResult<List<String>>> getTypes(
-      @RequestParam(required = false) final Boolean available) {
-    return Result.ok(this.codeRepository.getTypesByAvailable(available));
+      @RequestParam(required = false) final Boolean availableFlag) {
+    return Result.ok(this.codeRepository.getTypesByAvailableFlag(availableFlag));
   }
 
   @GetMapping

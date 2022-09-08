@@ -18,7 +18,7 @@ public class RoleSimpleDTO {
 
   @NotEmpty private String name;
 
-  @NotNull private Boolean available;
+  @NotNull private Boolean availableFlag;
 
   private Long createdBy;
   private Instant created;
@@ -29,7 +29,7 @@ public class RoleSimpleDTO {
   public RoleSimpleDTO(final Role role) {
     this.id = role.getId();
     this.name = role.getName();
-    this.available = role.getAvailable();
+    this.availableFlag = role.getAvailableFlag();
     this.created = role.getCreated();
     this.createdBy = role.getCreatedBy();
     this.updated = role.getUpdated();
@@ -39,7 +39,7 @@ public class RoleSimpleDTO {
   public RoleSimpleDTO(final RoleChildrenDTO dto) {
     this.id = dto.getId();
     this.name = dto.getName();
-    this.available = dto.getAvailable();
+    this.availableFlag = dto.getAvailableFlag();
     this.created = dto.getCreated();
     this.createdBy = dto.getCreatedBy();
     this.updated = dto.getUpdated();
@@ -51,7 +51,7 @@ public class RoleSimpleDTO {
   }
 
   public Role toRole() {
-    return Role.builder().id(this.id).name(this.name).available(this.available).build();
+    return Role.builder().id(this.id).name(this.name).availableFlag(this.availableFlag).build();
   }
 
   public Role toRole(final Long parentId, final Integer displayOrder, final List<Role> children) {
@@ -59,7 +59,7 @@ public class RoleSimpleDTO {
         Role.builder()
             .id(this.id)
             .name(this.name)
-            .available(this.available)
+            .availableFlag(this.availableFlag)
             .children(children)
             .displayOrder(displayOrder)
             .deleted(false);
