@@ -35,7 +35,6 @@ public class ExcelService extends AbstractExcelXView {
       final SXSSFWorkbook workbook,
       final HttpServletRequest request,
       final HttpServletResponse response) {
-    @SuppressWarnings("unchecked")
     final List<ExcelVO> excelVOs = (List<ExcelVO>) model.get(AbstractExcelXView.EXCEL_VOS);
     final List<?> listData = (List<?>) model.get(AbstractExcelXView.LIST_DATA);
     final String fileName =

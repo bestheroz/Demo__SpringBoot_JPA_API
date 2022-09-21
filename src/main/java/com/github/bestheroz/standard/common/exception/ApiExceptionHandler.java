@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.multipart.MultipartException;
 
 @Slf4j
 @ControllerAdvice
@@ -83,19 +82,6 @@ public class ApiExceptionHandler {
     }
     log.warn(LogUtils.getStackTrace(e));
     return Result.error(ExceptionCode.FAIL_INVALID_REQUEST);
-  }
-
-  @ExceptionHandler({MultipartException.class})
-  public ResponseEntity<ApiResult<?>> multipartException(final MultipartException e) {
-    log.warn(LogUtils.getStackTrace(e));
-    final ResponseEntity<ApiResult<?>> result;
-    //        if
-    // (ExceptionUtils.getMessage(e).contains(FileUploadBase.SizeLimitExceededException.class.getSimpleName())) {
-    //            result = new Response(ExceptionCode.FAIL_FILE_SIZE).getJsonObject();
-    //        } else {
-    result = Result.error();
-    //        }
-    return result;
   }
 
   @ExceptionHandler({DuplicateKeyException.class})

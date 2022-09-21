@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @UtilityClass
@@ -50,15 +49,6 @@ public class NullUtils {
     }
   }
 
-  public boolean isEmpty(final MultipartFile multipartFile) {
-    try {
-      return multipartFile == null || multipartFile.isEmpty();
-    } catch (final Throwable e) {
-      log.warn(LogUtils.getStackTrace(e));
-      return true;
-    }
-  }
-
   public boolean isEmpty(final List<?> list) {
     try {
       return size(list) == 0;
@@ -75,10 +65,6 @@ public class NullUtils {
       log.warn(LogUtils.getStackTrace(e));
       return true;
     }
-  }
-
-  public boolean isNotEmpty(final MultipartFile multipartFile) {
-    return !isEmpty(multipartFile);
   }
 
   public boolean isNotEmpty(final List<?> list) {

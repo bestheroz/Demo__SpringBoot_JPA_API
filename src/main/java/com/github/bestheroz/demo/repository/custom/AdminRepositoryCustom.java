@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AdminRepositoryCustom {
-
   Page<AdminDTO> getAllByPaginationAndSearch(
       String search, List<Boolean> availableFlagList, List<Long> roleIdList, Pageable pageable);
 

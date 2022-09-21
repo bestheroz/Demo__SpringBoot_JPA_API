@@ -16,7 +16,7 @@
     <springProfile name="sandbox, qa, prod">
       <encoder>
         <pattern>
-          <!-- @formatter:off -->%d{HH:mm:ss.SSS} %-5level [%t] %-75.75(%c{1}.%M\(%L\)) %m%n<!-- @formatter:on -->
+          <!-- @formatter:off -->[%t] %-75.75(%c{1}.%M\(%L\)) %m%n<!-- @formatter:on -->
         </pattern>
       </encoder>
     </springProfile>
@@ -41,6 +41,9 @@
   <logger name="org.hibernate.SQL.logStatement" level="DEBUG"/>
 
   <logger name="io.swagger" level="INFO"/>
+
+  <logger name="org.apache.http" level="INFO"/>
+  <logger name="com.amazonaws" level="INFO"/>
 
 
   <root level="DEBUG">

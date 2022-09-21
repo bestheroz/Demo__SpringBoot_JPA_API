@@ -3,10 +3,7 @@ spring:
     active: local
   servlet:
     multipart:
-      enabled: true
-      max-file-size: 20MB
-      max-request-size: 10MB
-      file-size-threshold: 0
+      enabled: false
   web:
     resources:
       chain:
@@ -27,6 +24,7 @@ spring:
     baseline-version: 0
     baseline-on-migrate: true
 server:
+  port: 8000
   compression:
     enabled: true
   http2:
@@ -39,14 +37,21 @@ server:
       charset: UTF-8
       enabled: true
       force: true
-springdoc:
-  api-docs:
-    enabled: false
 decorator:
   datasource:
     p6spy:
       logging: slf4j
       multiline: true
+springdoc:
+  api-docs:
+    enabled: false
+sentry:
+  dsn: https://3f180e3ef4724309ada7d86417762b1f@sentry.cubewiz.net/11
+  traces-sample-rate: 1.0
+cloud:
+  aws:
+    stack:
+      auto: false
 ---
 spring:
   config:
@@ -61,11 +66,6 @@ spring:
       minimum-idle: 2
 server:
   port: 8080
-springdoc:
-  api-docs:
-    enabled: true
-  paths-to-match:
-    - /api/v1/**
 sentry:
   logging:
     enabled: false
@@ -84,18 +84,30 @@ spring:
     hikari:
       maximum-pool-size: 3
       minimum-idle: 2
-server:
-  port: 8000
 springdoc:
   api-docs:
     enabled: true
   paths-to-match:
     - /api/v1/**
 sentry:
-  dsn: https://7bb0a4fc0ddc4803998ee772401e3cfc@o368486.ingest.sentry.io/5197118
   environment: sandbox
-  server-name:
-  traces-sample-rate: 1.0
+environment:
+  app:
+    test:
+---
+spring:
+  config:
+    activate:
+      on-profile: qa
+  datasource:
+    url:
+    username:
+    password:
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 2
+sentry:
+  environment: qa
 environment:
   app:
     test: test
@@ -111,13 +123,8 @@ spring:
     hikari:
       maximum-pool-size: 30
       minimum-idle: 10
-server:
-  port: 8000
 sentry:
-  dsn: https://7bb0a4fc0ddc4803998ee772401e3cfc@o368486.ingest.sentry.io/5197118
   environment: prod
-  server-name:
-  traces-sample-rate: 1.0
 environment:
   app:
     test: test

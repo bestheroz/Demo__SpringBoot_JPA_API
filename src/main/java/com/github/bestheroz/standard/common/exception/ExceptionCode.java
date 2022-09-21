@@ -59,7 +59,11 @@ public enum ExceptionCode {
 
   FAIL_ALREADY_EXISTS_LOGIN_ID("F023", "이미 존재하는 Admin ID 입니다."),
 
-  FAIL_SAME_PASSWORD("F024", "이전 비밀번호와 동일합니다.");
+  FAIL_SAME_PASSWORD("F024", "이전 비밀번호와 동일합니다."),
+
+  FAIL_ALREADY_EXISTS_PLATFORM("F025", "해당 서비스에 이미 존재하는 플랫폼입니다."),
+
+  FAIL_ALREADY_EXISTS_SERVICE("F026", "이미 존재하는 서비스 명입니다.");
 
   private final String code;
   private final String message;

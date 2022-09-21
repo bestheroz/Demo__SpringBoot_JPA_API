@@ -44,11 +44,11 @@ public class TraceLogger {
 
       stopWatch.stop();
       if (StringUtils.containsAny(signature, "Repository.", "RepositoryCustom.", ".domain.")) {
-        if (!StringUtils.containsAny(signature, "HealthRepository")) {
+        if (!StringUtils.contains(signature, "HealthRepository")) {
           log.info(STR_END_EXECUTE_TIME_FOR_REPOSITORY, signature, stopWatch.getTime());
         }
       } else {
-        if (!StringUtils.containsAny(signature, "HealthController")) {
+        if (!StringUtils.contains(signature, "HealthController")) {
           final String str = MapperUtils.toString(retVal);
           log.info(
               STR_END_EXECUTE_TIME,

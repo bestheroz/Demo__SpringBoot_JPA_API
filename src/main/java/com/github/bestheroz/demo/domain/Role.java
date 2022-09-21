@@ -58,11 +58,7 @@ public class Role extends RecursiveEntity<Role, RoleChildrenDTO> implements Seri
   @Builder.Default
   private final List<Role> children = new ArrayList<>();
 
-  @OneToMany(
-      mappedBy = "role",
-      fetch = FetchType.LAZY,
-      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
-      orphanRemoval = true)
+  @OneToMany(mappedBy = "role", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
   @OrderBy("displayOrder ASC")
   @Builder.Default
   private final List<RoleMenuMap> maps = new ArrayList<>();

@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AdminDTO {
-
   private Long id;
   private String loginId;
   private String name;

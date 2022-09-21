@@ -51,7 +51,7 @@ public class AdminRepositoryImpl implements AdminRepositoryCustom {
       }
     }
 
-    //     필터조건 (권한)
+    // 필터조건 (권한)
     if (NullUtils.isNotEmpty(roleIdList)) {
       builder.and(admin.role.id.in(roleIdList));
     }

@@ -1,9 +1,6 @@
 FROM openjdk:17-jdk
 MAINTAINER joony <bestheroz@gmail.com>
-VOLUME /tmp
 COPY build/libs/*.jar app.jar
-
-RUN mkdir /logs
 
 EXPOSE 8000
 
