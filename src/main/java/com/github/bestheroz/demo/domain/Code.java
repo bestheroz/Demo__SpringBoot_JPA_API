@@ -31,6 +31,7 @@ public class Code extends BaseAuditEntity implements Serializable {
 
   @Column(name = "`value`")
   private String value;
+
   private String text;
   private Boolean availableFlag;
   private Integer displayOrder;

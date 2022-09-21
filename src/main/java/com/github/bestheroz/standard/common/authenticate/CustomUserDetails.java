@@ -1,7 +1,7 @@
 package com.github.bestheroz.standard.common.authenticate;
 
-import com.github.bestheroz.demo.domain.Admin;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.bestheroz.demo.domain.Admin;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
