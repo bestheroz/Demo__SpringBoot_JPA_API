@@ -1,10 +1,10 @@
 plugins {
-    id "org.springframework.boot" version "2.7.3"
+    id "org.springframework.boot" version "2.7.4"
     id "java"
     id "idea"
-    id "com.diffplug.spotless" version "6.10.0"
+    id "com.diffplug.spotless" version "6.11.0"
     id "com.github.ben-manes.versions" version "0.42.0"
-    id 'io.spring.dependency-management' version "1.0.13.RELEASE"
+    id 'io.spring.dependency-management' version "1.0.14.RELEASE"
 }
 
 
@@ -13,11 +13,11 @@ repositories {
 }
 
 ext.javaJwtVersion = "4.0.0"
-ext.poiVersion = "5.2.2"
-ext.sentryVersion = "6.4.1"
+ext.poiVersion = "5.2.3"
+ext.sentryVersion = "6.5.0-beta.2"
 ext.springdocVersion = "1.6.11"
 ext.hibernateTypesVersion = "2.19.2"
-ext.p6spyVersion = "1.8.0"
+ext.p6spyVersion = "1.8.1"
 ext.awspringVersion = "2.4.2"
 ext.amazoneawsVersion = "1.0.8"
 
@@ -31,8 +31,9 @@ dependencies {
     implementation "org.apache.commons:commons-lang3"
     implementation "com.querydsl:querydsl-core"
     implementation "com.querydsl:querydsl-jpa"
+    implementation "com.h2database:h2"
     implementation 'mysql:mysql-connector-java'
-    implementation "software.aws.rds:aws-mysql-jdbc:1.1.0"
+    implementation "software.aws.rds:aws-mysql-jdbc:1.1.1"
     implementation "com.github.gavlyukovskiy:p6spy-spring-boot-starter:$p6spyVersion"
     implementation "com.auth0:java-jwt:$javaJwtVersion"
     implementation "org.apache.poi:poi:$poiVersion"
