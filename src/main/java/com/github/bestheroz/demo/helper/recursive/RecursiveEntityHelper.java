@@ -38,11 +38,12 @@ public class RecursiveEntityHelper<E extends RecursiveEntity<E, D>, D extends Re
 
     // 같은 뎁스에서 수정
     this.changeEntityAll(entities, dtos, parent);
+    entityManager.flush();
+    entityManager.clear();
     // 추가
     final List<E> results = this.addAll(entities, dtos, entityManager, parent, key);
     // 정렬
     this.sort(results, dtos);
-    entityManager.clear();
     return results.stream();
   }
 
