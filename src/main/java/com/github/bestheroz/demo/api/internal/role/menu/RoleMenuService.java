@@ -45,10 +45,7 @@ public class RoleMenuService {
     final List<RoleMenuMap> entities =
         helper.deleteAndGetRemains(oldEntities, dtos, this.roleMenuMapRepository);
     // 모두 저장
-    return helper
-        .saveAll(entities, dtos, null, roleId)
-        .map(RoleMenuChildrenDTO::new)
-        .toList();
+    return helper.saveAll(entities, dtos, null, roleId).map(RoleMenuChildrenDTO::new).toList();
   }
 
   public Set<Long> deletedRoleMenuMap(final Set<Long> ids) {

@@ -48,15 +48,13 @@ public class MenuService {
     final List<Menu> oldEntities =
         this.menuRepository.findAllByParentIdNullOrderByDisplayOrderAsc().toList();
 
-    final RecursiveEntityHelper<Menu, MenuChildrenDTO> helper = new RecursiveEntityHelper<>(this.entityManager);
+    final RecursiveEntityHelper<Menu, MenuChildrenDTO> helper =
+        new RecursiveEntityHelper<>(this.entityManager);
 
     // 이동된 root 엔티티 삭제
     final List<Menu> entities = helper.deleteAndGetRemains(oldEntities, dtos, this.menuRepository);
     // 모두 저장
-    return helper
-        .saveAll(entities, dtos, null, null)
-        .map(MenuChildrenDTO::new)
-        .toList();
+    return helper.saveAll(entities, dtos, null, null).map(MenuChildrenDTO::new).toList();
   }
 
   public List<MenuChildrenDTO> getMenuChildrenDTOWithRecursiveChildren(
