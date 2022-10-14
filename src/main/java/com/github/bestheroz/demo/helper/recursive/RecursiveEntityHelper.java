@@ -42,6 +42,7 @@ public class RecursiveEntityHelper<E extends RecursiveEntity<E, D>, D extends Re
     final List<E> results = this.addAll(entities, dtos, entityManager, parent, key);
     // 정렬
     this.sort(results, dtos);
+    entityManager.clear();
     return results.stream();
   }
 
