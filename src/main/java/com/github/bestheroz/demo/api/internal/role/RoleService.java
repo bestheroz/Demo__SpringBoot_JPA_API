@@ -46,13 +46,13 @@ public class RoleService {
     // 조회
     final List<Role> oldEntities = this.roleRepository.findAllByIdNotAndParentIdNull(1L).toList();
 
-    final RecursiveEntityHelper<Role, RoleChildrenDTO> helper = new RecursiveEntityHelper<>();
+    final RecursiveEntityHelper<Role, RoleChildrenDTO> helper = new RecursiveEntityHelper<>(this.entityManager);
 
     // 이동된 root 엔티티 삭제
     final List<Role> entities = helper.deleteAndGetRemains(oldEntities, dtos, this.roleRepository);
     // 모두 저장
     return helper
-        .saveAll(entities, dtos, this.entityManager, null, null)
+        .saveAll(entities, dtos, null, null)
         .map(RoleChildrenDTO::new)
         .toList();
   }

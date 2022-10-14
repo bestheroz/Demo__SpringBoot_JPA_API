@@ -39,14 +39,14 @@ public class RoleMenuService {
         this.roleMenuMapRepository.findAllByRoleIdAndParentIdNull(roleId).toList();
 
     final RecursiveEntityHelper<RoleMenuMap, RoleMenuChildrenDTO> helper =
-        new RecursiveEntityHelper<>();
+        new RecursiveEntityHelper<>(this.entityManager);
 
     // 이동된 root 엔티티 삭제
     final List<RoleMenuMap> entities =
         helper.deleteAndGetRemains(oldEntities, dtos, this.roleMenuMapRepository);
     // 모두 저장
     return helper
-        .saveAll(entities, dtos, this.entityManager, null, roleId)
+        .saveAll(entities, dtos, null, roleId)
         .map(RoleMenuChildrenDTO::new)
         .toList();
   }

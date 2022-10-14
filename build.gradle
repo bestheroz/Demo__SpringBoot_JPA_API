@@ -12,9 +12,9 @@ repositories {
     mavenCentral()
 }
 
-ext.javaJwtVersion = "4.0.0"
+ext.javaJwtVersion = "4.1.0"
 ext.poiVersion = "5.2.3"
-ext.sentryVersion = "6.5.0-beta.2"
+ext.sentryVersion = "6.5.0"
 ext.springdocVersion = "1.6.11"
 ext.hibernateTypesVersion = "2.19.2"
 ext.p6spyVersion = "1.8.1"
