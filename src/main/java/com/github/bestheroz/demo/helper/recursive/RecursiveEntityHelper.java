@@ -1,15 +1,14 @@
 package com.github.bestheroz.demo.helper.recursive;
 
-import lombok.NoArgsConstructor;
-import org.springframework.data.repository.CrudRepository;
-
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
+import javax.persistence.EntityManager;
+import lombok.NoArgsConstructor;
+import org.springframework.data.repository.CrudRepository;
 
 @NoArgsConstructor
 public class RecursiveEntityHelper<E extends RecursiveEntity<E, D>, D extends RecursiveDTO<D, E>> {
