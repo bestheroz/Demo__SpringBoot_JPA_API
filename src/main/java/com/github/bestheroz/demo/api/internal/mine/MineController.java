@@ -106,7 +106,7 @@ public class MineController {
         .findById(AuthenticationUtils.getId())
         .map(
             admin -> {
-              this.mineService.verifyPassword(password, admin.getPassword());
+              this.mineService.verifyPassword(password.replaceAll("\"", ""), admin.getPassword());
               return Result.ok();
             })
         .orElseThrow(() -> new BusinessException(ExceptionCode.FAIL_NOT_ALLOWED_ADMIN));
